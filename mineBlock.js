@@ -68,15 +68,3 @@ const txids = transactions.map(tx => tx.transaction_id);
 // Write output to output.txt
 fs.writeFileSync('output.txt', `${serializedBlock.header}\n${JSON.stringify(serializedBlock.coinbaseTransaction)}\n${txids.join('\n')}`);
 console.log('Block mined successfully! Output written to output.txt');
-
-// Output the serialized block
-// console.log(serializedBlock);
-
-// Output the transaction IDs
-// console.log(txids);
-
-// Output the block hash
-// console.log(blockHash);
-
-// Output the nonce
-// console.log(nonce);
