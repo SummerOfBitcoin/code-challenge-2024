@@ -1,7 +1,6 @@
 const { processTransactions } = require('./process_transactions');
 
 // Function to construct the block
-
 function constructBlock() {
     const { validTransactions } = processTransactions();
 
