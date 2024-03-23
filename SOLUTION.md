@@ -1,4 +1,6 @@
-## My approach to designing the block construction program involved several key steps:
+# Design Approach:
+
+My approach to designing the block construction program involved several key steps:
 
 <ins>1. Understanding Blockchain Structure:</ins>
 - A blockchain is a distributed ledger that contains a sequence of blocks, each containing a set of transactions.
@@ -39,7 +41,7 @@ By using and incorporating these key concepts, the block construction program, i
 
 ---
 
-## 
+## Implementation Details:
 
 This pseudo code outlines the sequence of logic, algorithms, and variables used in the implementation. It provides a high-level overview of how transactions are validated, blocks are constructed, and mining is performed in the simplified Bitcoin implementation.
 
@@ -90,3 +92,4 @@ This pseudo code outlines the sequence of logic, algorithms, and variables used 
         - Call the mineBlock method of the Block class with the chosen difficulty target.
 
 ```
+---
