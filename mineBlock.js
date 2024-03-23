@@ -1,70 +1,101 @@
-const fs = require('fs');
 const crypto = require('crypto');
 
-// Function to validate a transaction
-function validateTransaction(transaction) {
-    // Implement your transaction validation logic here
-    // For example:
-    // Check transaction format, signatures, inputs, outputs, etc.
-    // Return true if valid, false otherwise
+class Transaction {
+    constructor(sender, receiver, amount) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.amount = amount;
+        this.timestamp = new Date().toISOString();
+    }
 
-
+    toString() {
+        return `${this.sender} -> ${this.receiver}: ${this.amount} (${this.timestamp})`;
+    }
 }
 
-// Function to mine the block
-function mineBlock(transactions) {
-    const difficultyTarget = '0000ffff00000000000000000000000000000000000000000000000000000000';
-    let nonce = 0;
-    let blockHash;
+class Block {
+    constructor(transactions, previousHash) {
+        this.transactions = transactions;
+        this.previousHash = previousHash;
+        this.timestamp = new Date().toISOString();
+        this.nonce = 0;
+        this.hash = this.calculateHash();
+    }
 
-    while (true) {
-        const blockData = JSON.stringify(transactions) + nonce;
-        const hash = crypto.createHash('sha256').update(blockData).digest('hex');
-        if (hash < difficultyTarget) {
-            blockHash = hash;
-            break;
+    calculateHash() {
+        const blockContent = this.transactions.map(transaction => transaction.toString()).join('') + this.previousHash + this.timestamp + this.nonce;
+        return crypto.createHash('sha256').update(blockContent).digest('hex');
+    }
+
+    mineBlock(difficulty) {
+        while (this.hash.substring(0, difficulty) !== '0'.repeat(difficulty)) {
+            this.nonce++;
+            this.hash = this.calculateHash();
         }
-        nonce++;
     }
 
-    return { nonce, blockHash };
-    
+    toString() {
+        const transactionStrings = this.transactions.map(transaction => transaction.toString());
+        return `Previous Hash: ${this.previousHash}\nTransactions: ${transactionStrings.join(', ')}\nTimestamp: ${this.timestamp}\nNonce: ${this.nonce}\nHash: ${this.hash}\n`;
+    }
 }
 
-// Read transaction files from mempool folder
-const mempoolFiles = fs.readdirSync('./mempool');
-const transactions = [];
-mempoolFiles.forEach(file => {
-    const transaction = JSON.parse(fs.readFileSync(`./mempool/${file}`, 'utf8'));
-    if (validateTransaction(transaction)) {
-        transactions.push(transaction);
+class Blockchain {
+    constructor() {
+        this.chain = [this.createGenesisBlock()];
+        this.difficulty = 4;
     }
+
+    createGenesisBlock() {
+        return new Block([], "0");
+    }
+
+    getLatestBlock() {
+        return this.chain[this.chain.length - 1];
+    }
+
+    addBlock(newBlock) {
+        newBlock.previousHash = this.getLatestBlock().hash;
+        newBlock.mineBlock(this.difficulty);
+        this.chain.push(newBlock);
+    }
+
+    isValid() {
+        for (let i = 1; i < this.chain.length; i++) {
+            const currentBlock = this.chain[i];
+            const previousBlock = this.chain[i - 1];
+
+            if (currentBlock.hash !== currentBlock.calculateHash()) {
+                return false;
+            }
+
+            if (currentBlock.previousHash !== previousBlock.hash) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+// Sample transactions
+const transactions = [
+    new Transaction("Alice", "Bob", 10),
+    new Transaction("Bob", "Charlie", 5)
+];
+
+// Create blockchain
+const blockchain = new Blockchain();
+
+// Add transactions to the blockchain
+transactions.forEach(transaction => {
+    const block = new Block([transaction], blockchain.getLatestBlock().hash);
+    blockchain.addBlock(block);
 });
 
-// Create coinbase transaction (adjust as per your requirements)
-const coinbaseTransaction = {
-    // Add coinbase transaction details here
-};
+console.log("Blockchain:");
+console.log(JSON.stringify(blockchain, null, 2));
 
-// Add coinbase transaction to the list of transactions
-transactions.unshift(coinbaseTransaction);
 
-// Mine the block
-const { nonce, blockHash } = mineBlock(transactions);
-
-// Serialize the block
-const serializedBlock = {
-    header: {
-        nonce: nonce,
-        blockHash: blockHash
-    },
-    coinbaseTransaction: coinbaseTransaction,
-    transactions: transactions
-};
-
-// Generate transaction IDs (txids) of the transactions mined in the block
-const txids = transactions.map(tx => tx.transaction_id);
-
-// Write output to output.txt
-fs.writeFileSync('output.txt', `${serializedBlock.header}\n${JSON.stringify(serializedBlock.coinbaseTransaction)}\n${txids.join('\n')}`);
-console.log('Block mined successfully! Output written to output.txt');
+// Output:
+console.log("Is blockchain valid?", blockchain.isValid());
