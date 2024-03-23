@@ -38,3 +38,55 @@
 By using and incorporating these key concepts, the block construction program, i have created valid blocks for inclusion in the blockchain, ensuring the security of the decentralized ledger system.
 
 ---
+
+## 
+
+This pseudo code outlines the sequence of logic, algorithms, and variables used in the implementation. It provides a high-level overview of how transactions are validated, blocks are constructed, and mining is performed in the simplified Bitcoin implementation.
+
+```
+1. Define Transaction class:
+    - Properties:
+        - sender: The address of the sender of the transaction.
+        - receiver: The address of the receiver of the transaction.
+        - amount: The amount of cryptocurrency being transferred.
+        - signature: The digital signature of the transaction.
+    - Methods:
+        - calculateHash(): Computes the hash of the transaction data.
+
+2. Define Block class:
+    - Properties:
+        - transactions: An array of Transaction objects representing the transactions included in the block.
+        - previousHash: The hash of the previous block in the blockchain.
+        - timestamp: The timestamp indicating when the block was created.
+        - nonce: A counter used in the mining process.
+        - hash: The hash of the current block.
+    - Methods:
+        - calculateHash(): Computes the hash of the block using its properties.
+        - mineBlock(difficulty): Mines the block by finding a hash that meets the difficulty target.
+
+3. Define function validateTransactions(transactions):
+    - Input: An array of Transaction objects.
+    - Output: A boolean indicating whether all transactions are valid.
+    - Logic:
+        - Iterate over each transaction in the array.
+        - For each transaction:
+            - Verify the digital signature to ensure it was signed by the sender.
+            - Check if the sender has sufficient balance to complete the transaction.
+            - Ensure the transaction amount is non-negative.
+            - If any validation check fails, return false.
+        - If all transactions pass validation, return true.
+
+4. Main logic:
+    - Create sample transactions using the Transaction class.
+    - Validate transactions using the validateTransactions function.
+    - If transactions are invalid, print an error message and exit.
+    - Create the genesis block:
+        - Set the previousHash to a predefined value (e.g., "0").
+        - Set the timestamp to the current time.
+        - Set the nonce to 0.
+        - Calculate the hash of the genesis block.
+    - Mine the genesis block:
+        - Choose a difficulty target (e.g., 4 leading zeros in the block hash).
+        - Call the mineBlock method of the Block class with the chosen difficulty target.
+
+```
