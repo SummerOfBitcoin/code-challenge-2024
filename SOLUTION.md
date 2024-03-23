@@ -93,3 +93,20 @@ This pseudo code outlines the sequence of logic, algorithms, and variables used 
 
 ```
 ---
+
+# Results and Performance:
+
+My writen script demonstrates a simplified Bitcoin block construction and mining algorithm. It includes basic transaction validation, block hashing, and mining functionality. However, its performance and accuracy heavily depend on the actual implementation details, including the validation logic and mining algorithm. Real-world performance would require rigorous testing and optimization for efficiency, security, and scalability.
+
+## Screenshot
+<img width="960" alt="image" src="https://github.com/SummerOfBitcoin/code-challenge-2024-Durgesh4993/assets/98798977/07797543-4a8e-43b7-81b8-0a092aa0b85a">
+
+<img width="960" alt="image" src="https://github.com/SummerOfBitcoin/code-challenge-2024-Durgesh4993/assets/98798977/1cbfd643-e23e-496f-9025-36dbc5be4ce1">
+
+## Demo Video
+
+https://github.com/SummerOfBitcoin/code-challenge-2024-Durgesh4993/assets/98798977/3562efbb-f5ea-4712-9794-3659077d683e
+
+
+
+
