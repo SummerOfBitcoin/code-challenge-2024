@@ -108,5 +108,10 @@ My writen script demonstrates a simplified Bitcoin block construction and mining
 https://github.com/SummerOfBitcoin/code-challenge-2024-Durgesh4993/assets/98798977/3562efbb-f5ea-4712-9794-3659077d683e
 
 
+## Final Solution:
+
+![alt text](image.png)
+
+![alt text](image-1.png)
 
 
