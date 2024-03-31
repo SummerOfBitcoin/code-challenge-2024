@@ -1,85 +1,127 @@
-import json
 import os
+import json
 import hashlib
+import time
+from typing import List, Dict
 
-# Constants
-DIFFICULTY_TARGET = "0000ffff00000000000000000000000000000000000000000000000000000000"
-BLOCK_SIZE_LIMIT = 4000000  # Assuming block size limit is 4,000,000 bytes
+# Set the difficulty target
+DIFFICULTY_TARGET = 0x00000000000000000000000000000000000000000000000000000000000000ff
 
-# Function to validate a transaction
-def validate_transaction(transaction):
-    # Check if transaction has required fields
-    if "txid" not in transaction or "vin" not in transaction or "vout" not in transaction:
+# Define the function to validate transactions
+def is_valid_transaction(tx: Dict) -> bool:
+    # Check if the transaction has the required keys
+    required_keys = ['txid', 'version', 'locktime', 'vin', 'vout', 'size', 'weight', 'fee', 'status']
+    if not all(key in tx for key in required_keys):
         return False
 
-    # Validate inputs (vin)
-    for vin in transaction["vin"]:
-        if "txid" not in vin or "vout" not in vin:
+    # Check if input transactions are valid
+    for vin in tx['vin']:
+        if not is_valid_input(vin, tx['vout']):
             return False
-        # Additional validation rules for inputs
 
-    # Validate outputs (vout)
-    for vout in transaction["vout"]:
-        if "value" not in vout or "scriptpubkey_asm" not in vout:
-            return False
-        # Additional validation rules for outputs
+    # Check if output values are non-negative
+    if any(vout['value'] < 0 for vout in tx['vout']):
+        return False
 
-    # Additional validation rules for the transaction as a whole
+    # Add additional validation rules as needed
+    # ...
 
-    # Return True if the transaction passes all validation checks
     return True
 
-# Read JSON files from the mempool folder
-mempool_folder = "mempool"
+# Define the function to validate input transactions
+def is_valid_input(vin: Dict, vout: List[Dict]) -> bool:
+    # Check if the input transaction is referenced in the output transactions
+    txid = vin['txid']
+    vout_index = vin['vout']
+    for tx_vout in vout:
+        if txid == tx_vout['txid'] and vout_index == tx_vout['vout']:
+            return True
+
+    return False
+
+# Define the function to mine the block
+def mine_block(transactions: List[Dict]) -> (Dict, bytes, List[str]):
+    # Create the block header
+    version = 1 or 2
+    block_header = {
+        'version': version,
+        'prev_block_hash': '0000000000000000000000000000000000000000000000000000000000000000',
+        'merkle_root': calculate_merkle_root(transactions),
+        'timestamp': int(time.time()),
+        'bits': '%064x' % DIFFICULTY_TARGET,
+        'nonce': 0
+    }
+
+    # Serialize the block header
+    header_bin = serialize_header(block_header)
+
+    # Mine the block by incrementing the nonce until the hash meets the target
+    while True:
+        block_hash = hashlib.sha256(hashlib.sha256(header_bin).digest()).digest()[::-1].hex()
+        if int(block_hash, 16) < DIFFICULTY_TARGET:
+            break
+        block_header['nonce'] += 1
+        header_bin = serialize_header(block_header)
+
+    # Create the coinbase transaction
+    coinbase_tx = create_coinbase_transaction()
+
+    # Serialize the coinbase transaction
+    coinbase_tx_serialized = serialize_transaction(coinbase_tx)
+
+    return block_header, coinbase_tx_serialized, [coinbase_tx['txid']] + [tx['txid'] for tx in transactions]
+
+# Function to calculate the Merkle root
+def calculate_merkle_root(transactions: List[Dict]) -> str:
+    # Implement Merkle root calculation logic
+    # This is a simplified implementation for demonstration purposes
+    tx_hashes = [bytes.fromhex(tx['txid']) for tx in transactions]
+    if not tx_hashes:
+        return '0' * 64
+    else:
+        return hashlib.sha256(b''.join(tx_hashes)).hexdigest()
+
+# Function to serialize the block header
+def serialize_header(header: Dict) -> bytes:
+    # Implement block header serialization logic
+    # This is a simplified implementation for demonstration purposes
+    version = header['version'].to_bytes(4, byteorder='little')
+    prev_block_hash = bytes.fromhex(header['prev_block_hash'])
+    merkle_root = bytes.fromhex(header['merkle_root'])
+    timestamp = header['timestamp'].to_bytes(4, byteorder='little')
+    bits = bytes.fromhex(header['bits'])
+    nonce = header['nonce'].to_bytes(4, byteorder='little')
+    return version + prev_block_hash + merkle_root + timestamp + bits + nonce
+
+# Function to create the coinbase transaction
+def create_coinbase_transaction() -> Dict:
+    # Implement coinbase transaction creation logic
+    # This is a simplified implementation for demonstration purposes
+    return {'txid': '0000000000000000000000000000000000000000000000000000000000000000'}
+
+# Function to serialize a transaction
+def serialize_transaction(tx: Dict) -> bytes:
+    # Implement transaction serialization logic
+    # This is a simplified implementation for demonstration purposes
+    return bytes.fromhex(tx['hex'])
+
+# Load transactions from the mempool folder
+mempool_dir = 'mempool'
 transactions = []
-for filename in os.listdir(mempool_folder):
-    if filename.endswith(".json"):
-        with open(os.path.join(mempool_folder, filename)) as file:
-            transaction_data = json.load(file)
-            transactions.append(transaction_data)
-
-# Validate and filter valid transactions
-valid_transactions = []
-for transaction in transactions:
-    if validate_transaction(transaction):
-        valid_transactions.append(transaction)
-
-# Sort valid transactions by fee in descending order
-valid_transactions.sort(key=lambda x: x["fee"], reverse=True)
-
-# Calculate total fee and block size
-total_fee = 0
-block_size = 0
-mined_transactions = []
-for transaction in valid_transactions:
-    transaction_size = len(json.dumps(transaction))
-    if block_size + transaction_size <= BLOCK_SIZE_LIMIT:
-        mined_transactions.append(transaction)
-        total_fee += transaction["fee"]
-        block_size += transaction_size
-
-# Create the block header
-block_header = f"Block Header: Difficulty Target={DIFFICULTY_TARGET}"
-
-# Create the coinbase transaction
-coinbase_transaction = {
-    "txid": "coinbase",
-    "vin": [],
-    "vout": [{"value": total_fee, "scriptpubkey_asm": "coinbase_script"}]
-}
+for filename in os.listdir(mempool_dir):
+    filepath = os.path.join(mempool_dir, filename)
+    if os.path.isfile(filepath):
+        with open(filepath, 'r') as file:
+            tx = json.load(file)
+            if is_valid_transaction(tx):
+                transactions.append(tx)
 
 # Mine the block
-nonce = 0
-block_hash = ""
-while block_hash[:16] != DIFFICULTY_TARGET:
-    block_data = json.dumps([block_header, coinbase_transaction] + mined_transactions + [nonce])
-    block_hash = hashlib.sha256(block_data.encode()).hexdigest()
-    nonce += 1
+block_header, coinbase_tx, txids = mine_block(transactions)
 
-# Write the output file
-with open("output.txt", "w") as output_file:
-    output_file.write(f"{block_header}\n")
-    output_file.write(f"{json.dumps(coinbase_transaction)}\n")
-    output_file.write(f"{coinbase_transaction['txid']}\n")
-    for transaction in mined_transactions:
-        output_file.write(f"{transaction['txid']}\n")
+# Write the output to output.txt
+with open('output.txt', 'w') as file:
+    file.write(json.dumps(block_header) + '\n')
+    file.write(coinbase_tx.hex() + '\n')
+    for txid in txids:
+        file.write(txid + '\n')
