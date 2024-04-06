@@ -1,11 +1,15 @@
 const fs = require('fs');
+const crypto = require('crypto');
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 
 // Define the path to the mempool folder
 const mempoolFolderPath = './mempool';
 
-// Arrays to store valid and invalid transactions
-const validTransactions = [];
-const invalidTransactions = [];
+// Define the difficulty target
+const difficultyTarget = '0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+// Number of threads for parallel processing
+const numThreads = 4;
 
 // Read the list of files in the mempool folder
 fs.readdir(mempoolFolderPath, (err, files) => {
@@ -13,6 +17,9 @@ fs.readdir(mempoolFolderPath, (err, files) => {
         console.error('Error reading mempool folder:', err);
         return;
     }
+
+    // Array to store valid transactions
+    const validTransactions = [];
 
     // Iterate through each file in the mempool folder
     files.forEach(file => {
@@ -32,17 +39,15 @@ fs.readdir(mempoolFolderPath, (err, files) => {
 
                 // Validate the transaction
                 if (validateTransaction(transaction)) {
-                    validTransactions.push({ filename: file, transaction });
-                } else {
-                    invalidTransactions.push({ filename: file, transaction });
+                    validTransactions.push(transaction);
                 }
             } catch (parseError) {
                 console.error(`Error parsing JSON in file ${file}:`, parseError);
             }
 
-            // If all files have been processed, write the transactions to output.txt
-            if (validTransactions.length + invalidTransactions.length === files.length) {
-                writeTransactions(validTransactions, invalidTransactions);
+            // If all files have been processed, start mining
+            if (validTransactions.length === files.length) {
+                mineBlock(validTransactions);
             }
         });
     });
@@ -55,14 +60,47 @@ function validateTransaction(transaction) {
     return true;
 }
 
-// Function to write transactions to output.txt
-function writeTransactions(validTransactions, invalidTransactions) {
-    const output = `Valid Transactions:\n${JSON.stringify(validTransactions, null, 2)}\n\nInvalid Transactions:\n${JSON.stringify(invalidTransactions, null, 2)}`;
-    fs.writeFile('output.txt', output, err => {
-        if (err) {
-            console.error('Error writing output to file:', err);
-        } else {
-            console.log('Output file generated successfully.');
+// Function to calculate the transaction ID (txid)
+function getTransactionId(transaction) {
+    const transactionString = JSON.stringify(transaction);
+    return crypto.createHash('sha256').update(transactionString).digest('hex');
+}
+
+// Function to mine a block using parallel processing
+function mineBlock(transactions) {
+    console.log('Mining started...');
+
+    const workerData = { transactions, difficultyTarget, numThreads };
+    const workers = [];
+
+    for (let i = 0; i < numThreads; i++) {
+        workers[i] = new Worker(__filename, { workerData });
+        workers[i].on('message', message => {
+            if (message.foundBlock) {
+                workers.forEach(worker => worker.terminate());
+                console.log('Block mined successfully.');
+                console.log('Block Hash:', message.blockHash);
+                console.log('Nonce:', message.nonce);
+            }
+        });
+    }
+}
+
+// Mining logic for each worker thread
+if (!isMainThread) {
+    const { transactions, difficultyTarget, numThreads } = workerData;
+    const threadId = parseInt(require('worker_threads').threadId);
+
+    const startNonce = threadId * Math.floor(Number.MAX_SAFE_INTEGER / numThreads);
+    const endNonce = (threadId + 1) * Math.floor(Number.MAX_SAFE_INTEGER / numThreads);
+
+    for (let nonce = startNonce; nonce < endNonce; nonce++) {
+        const blockData = JSON.stringify({ transactions, nonce });
+        const blockHash = crypto.createHash('sha256').update(blockData).digest('hex');
+
+        if (blockHash < difficultyTarget) {
+            parentPort.postMessage({ foundBlock: true, blockHash, nonce });
+            break;
         }
-    });
+    }
 }
