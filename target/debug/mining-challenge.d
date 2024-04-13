@@ -1,1 +1,0 @@
-/home/gabriel/projects/code-challenge-2024-gabrielgusn/target/debug/mining-challenge: /home/gabriel/projects/code-challenge-2024-gabrielgusn/src/lib.rs /home/gabriel/projects/code-challenge-2024-gabrielgusn/src/main.rs
