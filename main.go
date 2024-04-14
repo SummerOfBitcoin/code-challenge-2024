@@ -43,8 +43,8 @@ func main() {
 	if ProofOfWork(&Bh) {
 		file, _ := os.Create("output.txt")
 		defer file.Close()
-		fmt.Println(Bh.merkleRoot)
-		fmt.Println(Bh.nonce)
+		// fmt.Println(Bh.merkleRoot)
+		// fmt.Println(Bh.nonce)
 		serializedBh := SerializeBlockHeader(&Bh)
 		segserialized, _ := SegWitSerialize(cbTx)
 		file.WriteString(hex.EncodeToString(serializedBh) + "\n")
