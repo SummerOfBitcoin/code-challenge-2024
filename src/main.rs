@@ -1,5 +1,5 @@
 mod block;
-use block::BlockHeader;
+use block::block_header::BlockHeader;
 use chrono::Utc;
 use mining_challenge::read_mempool;
 // use sha2::{Sha256, Digest};
