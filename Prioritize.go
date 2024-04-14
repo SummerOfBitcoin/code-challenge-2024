@@ -37,8 +37,8 @@ func Prioritize() (uint64, []string, []string) {
 		}
 		serialized, _ := serializeTransaction(&tx)
 		segserialized, _ := SegWitSerialize(&tx)
-		txID := to_sha(to_sha(serialized))
-		wtxID := to_sha(to_sha(segserialized))
+		txID := reverseBytes(to_sha(to_sha(serialized)))
+		wtxID := reverseBytes(to_sha(to_sha(segserialized)))
 		txInfo = append(txInfo, TxInfo{TxID: hex.EncodeToString(txID), WTxID: hex.EncodeToString(wtxID), Fee: fee, Weight: uint64(calculateWitnessSize(&tx) + CalculateBaseSize(&tx)*4)})
 
 	}
