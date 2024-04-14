@@ -53,13 +53,18 @@ func compareByteArrays(a, b []byte) int {
 }
 func ProofOfWork(bh *BlockHeader) bool {
 	targetBytes, _ := hex.DecodeString(target)
+	// fmt.Printf("Target: %v\n", targetBytes)
 	for {
 		serialized := SerializeBlockHeader(bh)
-		hash := to_sha(to_sha(serialized))
+		hash := reverseBytes(to_sha(to_sha(serialized)))
 
 		if compareByteArrays(hash, targetBytes) == -1 {
 			fmt.Println("Block Mined", hex.EncodeToString(hash))
 			return true
+		}
+		if (bh.nonce < 0x0 || bh.nonce > 0xffffffff){
+			fmt.Println("FUCKED")
+			return false
 		}
 		bh.nonce++
 	}
