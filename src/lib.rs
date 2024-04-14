@@ -1,5 +1,5 @@
 // use std::env;
-use std::{any::{type_name_of_val}, fs, io};
+use std::{fs, io};
 use serde_json;
 
 pub fn read_mempool(path: &str){
