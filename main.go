@@ -18,7 +18,7 @@ type BlockHeader struct {
 
 var Bh BlockHeader = BlockHeader{
 	version:       7,
-	prevBlockHash: "000000000000000000000000000000000000000000000000000000000000ff00",
+	prevBlockHash: "0000000000000000000000000000000000000000000000000000000000000000",
 	merkleRoot:    "",
 	time:          time.Now().Unix(),
 	bits:          "1f00ffff",
