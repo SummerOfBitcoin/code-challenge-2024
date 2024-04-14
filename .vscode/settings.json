@@ -4,6 +4,7 @@
     ],
     "cSpell.ignoreWords": [
         "lnode",
-        "rnode"
+        "rnode",
+        "serializedcb"
     ]
 }
