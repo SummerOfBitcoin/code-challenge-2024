@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"os"
 	"sort"
 )
@@ -46,7 +47,7 @@ func Prioritize() (uint64, []string, []string) {
 		return comp(txInfo[i], txInfo[j])
 	})
 	var PermissibleTxs []TxInfo
-	var PermissibleWeight uint64 = 4000000
+	var PermissibleWeight uint64 = 3999000
 	var reward uint64 = 0
 	for _, tx := range txInfo {
 		if PermissibleWeight >= tx.Weight {
@@ -57,5 +58,6 @@ func Prioritize() (uint64, []string, []string) {
 			reward += tx.Fee
 		}
 	}
+	fmt.Println("weight: ", PermissibleWeight)
 	return reward, permittedTxIDs, permittedWTxIDs
 }
