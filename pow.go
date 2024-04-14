@@ -27,7 +27,8 @@ func SerializeBlockHeader(bh *BlockHeader) []byte {
 	binary.LittleEndian.PutUint32(timeBytes, uint32(bh.time))
 	serialized = append(serialized, timeBytes...)
 
-	bitsBytes, _ := hex.DecodeString(bh.bits)
+	bitsBytes := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bitsBytes, bh.bits)
 	serialized = append(serialized, bitsBytes...)
 
 	nonceBytes := make([]byte, 4)

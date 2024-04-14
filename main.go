@@ -12,7 +12,7 @@ type BlockHeader struct {
 	prevBlockHash string
 	merkleRoot    string
 	time          int64
-	bits          string
+	bits          uint32
 	nonce         uint32
 }
 
@@ -21,7 +21,7 @@ var Bh BlockHeader = BlockHeader{
 	prevBlockHash: "0000000000000000000000000000000000000000000000000000000000000000",
 	merkleRoot:    "",
 	time:          time.Now().Unix(),
-	bits:          "1f00ffff",
+	bits:          0x1f00ffff,
 	nonce:         0,
 }
 
