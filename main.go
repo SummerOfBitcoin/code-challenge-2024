@@ -45,7 +45,9 @@ func main() {
 		file.WriteString(hex.EncodeToString(serializedBh) + "\n")
 		file.WriteString(hex.EncodeToString(serializedcbTx) + "\n")
 		for _, tx := range TxIDs {
-			file.WriteString(tx + "\n")
+			txBytes, _ := hex.DecodeString(tx)
+			txBytes = reverseBytes(txBytes)
+			file.WriteString(hex.EncodeToString(txBytes) + "\n")
 		}
 	}
 
