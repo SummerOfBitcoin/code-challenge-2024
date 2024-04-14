@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	"time"
 )
 
@@ -57,6 +58,7 @@ func ProofOfWork(bh *BlockHeader) bool {
 		hash := to_sha(to_sha(serialized))
 
 		if compareByteArrays(hash, targetBytes) == -1 {
+			fmt.Println("Block Mined", hex.EncodeToString(hash))
 			return true
 		}
 		bh.nonce++
