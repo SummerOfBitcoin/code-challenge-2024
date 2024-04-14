@@ -30,6 +30,7 @@ func main() {
 
 	cbTx := Coinbase(netReward)
 	serializedcbTx, _ := serializeTransaction(cbTx)
+	fmt.Printf("CBTX: %x\n", serializedcbTx)
 	TxIDs = append([]string{hex.EncodeToString(reverseBytes(to_sha(to_sha(serializedcbTx))))}, TxIDs...)
 	mkr := NewMerkleTree(TxIDs)
 	Bh.merkleRoot = hex.EncodeToString(mkr.Data)
@@ -42,8 +43,9 @@ func main() {
 		fmt.Println(Bh.merkleRoot)
 		fmt.Println(Bh.nonce)
 		serializedBh := SerializeBlockHeader(&Bh)
+		segserialized, _ := SegWitSerialize(cbTx)
 		file.WriteString(hex.EncodeToString(serializedBh) + "\n")
-		file.WriteString(hex.EncodeToString(serializedcbTx) + "\n")
+		file.WriteString(hex.EncodeToString(segserialized) + "\n")
 		for _, tx := range TxIDs {
 			file.WriteString(tx + "\n")
 		}
