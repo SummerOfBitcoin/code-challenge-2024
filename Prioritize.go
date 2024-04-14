@@ -47,7 +47,7 @@ func Prioritize() (uint64, []string, []string) {
 		return comp(txInfo[i], txInfo[j])
 	})
 	var PermissibleTxs []TxInfo
-	var PermissibleWeight uint64 = 3999000
+	var PermissibleWeight uint64 = 3999300
 	var reward uint64 = 0
 	for _, tx := range txInfo {
 		if PermissibleWeight >= tx.Weight {
@@ -59,5 +59,6 @@ func Prioritize() (uint64, []string, []string) {
 		}
 	}
 	fmt.Println("weight: ", PermissibleWeight)
+	fmt.Println("reward: ", reward)
 	return reward, permittedTxIDs, permittedWTxIDs
 }
