@@ -8,5 +8,5 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.37"
 hex-literal = "0.4.1"
+ring = "0.17.8"
 serde_json = "1.0.115"
-sha2 = "0.10.8"
