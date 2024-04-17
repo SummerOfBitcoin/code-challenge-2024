@@ -1,3 +1,0 @@
-{"timestamp":1713341746}
-{"txid":"coinbase_txid_placeholder"}
-coinbase_txid_placeholder
