@@ -7,7 +7,7 @@ use std::fmt::Write;
 // use hex_literal::hex;
 
 fn main() {
-    read_mempool("/home/gabriel/projects/code-challenge-2024-gabrielgusn/mempool/");
+    read_mempool("/home/gabriel/projects/bitcoin-mining-challenge/mempool/");
 
     // let mut hasher = Sha256::new();
     let first_block_header: BlockHeader = BlockHeader::new(String::from("00000000000000000000000000000000"), String::from("00000000000000000000000000000000"), Utc::now(), 128);
@@ -22,7 +22,8 @@ fn main() {
 
         let mut context: Context = Context::new(&SHA256);
         
-        let target_hash: String = String::from("0000ffff00000000000000000000000000000000000000000000000000000000");
+        // let target_hash: String = String::from("0000ffff00000000000000000000000000000000000000000000000000000000");
+        let target_hash: String = String::from("00000cff00000000000000000000000000000000000000000000000000000000");
 
         context.update(data.as_bytes());
         context.update(&nonce.to_be_bytes());
