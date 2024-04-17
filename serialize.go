@@ -238,3 +238,25 @@ func Handle(err error) {
 		fmt.Println(err)
 	}
 }
+
+// func Serialize() {
+// 	dir := "./mempool"
+// 	files, err := os.ReadDir(dir)
+// 	fileF, _ := os.Create("txids.txt")
+// 	fileF2, _ := os.Create("wtxids.txt")
+// 	Handle(err)
+// 	for _, file := range files {
+// 		data, err := jsonData(dir + "/" + file.Name())
+// 		Handle(err)
+// 		var tx Transaction
+// 		err = json.Unmarshal([]byte(data), &tx)
+// 		Handle(err)
+// 		serializedTx, err := serializeTransaction(&tx)
+// 		Handle(err)
+// 		txid := hex.EncodeToString((to_sha(to_sha(serializedTx))))
+// 		fileF.WriteString(txid + "\n")
+// 		segserialized, _ := SegWitSerialize(&tx)
+// 		wtxid := hex.EncodeToString((to_sha(to_sha(segserialized))))
+// 		fileF2.WriteString(wtxid + "\n")
+// 	}
+// }
