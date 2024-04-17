@@ -50,5 +50,5 @@ func main() {
 			file.WriteString(tx + "\n")
 		}
 	}
-
+	// Serialize()
 }
