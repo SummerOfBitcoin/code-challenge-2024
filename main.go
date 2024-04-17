@@ -37,9 +37,6 @@ func main() {
 	cbtxbase := CalculateBaseSize(cbTx)
 	cbtxwitness := calculateWitnessSize(cbTx)
 	fmt.Println("Cbtx wt: ", cbtxwitness+(cbtxbase*4))
-	// witnessMerkle := NewMerkleTree(wTxIDs)
-	// fmt.Println("Length of the witness merkles: ", len(wTxIDs))
-	// fmt.Println("WMKR: ", hex.EncodeToString(witnessMerkle.Data))
 	if ProofOfWork(&Bh) {
 		file, _ := os.Create("output.txt")
 		defer file.Close()
