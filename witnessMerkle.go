@@ -15,7 +15,12 @@ func CreateWitnessMerkle() string {
 	for _, line := range strings.Split(string(file), "\n") {
 		wtxidsnew = append(wtxidsnew, line)
 	}
-	// fmt.Println(len(wtxidsnew))
+	for idx := range wtxidsnew {
+		byt, _ := hex.DecodeString(wtxidsnew[idx])
+		byt = reverseBytes(byt)
+		wtxidsnew[idx] = hex.EncodeToString(byt)
+	}
+	fmt.Println(len(wtxidsnew))
 	merkleRoot := NewMerkleTree(wtxidsnew)
 	fmt.Println("WMKR: ", hex.EncodeToString(merkleRoot.Data))
 	commitment_string := hex.EncodeToString(merkleRoot.Data) + "0000000000000000000000000000000000000000000000000000000000000000"
