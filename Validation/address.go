@@ -1,9 +1,12 @@
-package main
+package Validation
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/pred695/code-challenge-2024-pred695/Structs"
+	"github.com/pred695/code-challenge-2024-pred695/Utils"
 )
 
 var (
@@ -16,17 +19,17 @@ var (
 func Address() {
 	dir := "./mempool"
 	files, err := os.ReadDir(dir)
-	Handle(err)
+	Utils.Handle(err)
 	for _, file := range files {
-		txData, err := jsonData(dir + "/" + file.Name())
-		Handle(err)
-		var tx Transaction
+		txData, err := Utils.JsonData(dir + "/" + file.Name())
+		Utils.Handle(err)
+		var tx Structs.Transaction
 		err = json.Unmarshal([]byte(txData), &tx)
-		Handle(err)
+		Utils.Handle(err)
 		for _, vin := range tx.Vin {
 			if vin.Prevout.ScriptpubkeyType == "p2pkh" {
 				pubkey_asm := vin.Prevout.ScriptpubkeyAsm
-				address := p2pkh(pubkey_asm)
+				address := P2pkh(pubkey_asm)
 				if string(address) == vin.Prevout.ScriptpubkeyAddress {
 					// fmt.Println(vin.Prevout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)
@@ -41,7 +44,7 @@ func Address() {
 
 			if vin.Prevout.ScriptpubkeyType == "p2sh" {
 				pubkey_asm := vin.Prevout.ScriptpubkeyAsm
-				address := p2sh(pubkey_asm)
+				address := P2sh(pubkey_asm)
 				if string(address) == vin.Prevout.ScriptpubkeyAddress {
 					// fmt.Println(vin.Prevout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)
@@ -56,7 +59,7 @@ func Address() {
 
 			if vin.Prevout.ScriptpubkeyType == "v0_p2wpkh" {
 				pubkey_asm := vin.Prevout.ScriptpubkeyAsm
-				address := p2wpkh(pubkey_asm)
+				address := P2wpkh(pubkey_asm)
 				if string(address) == vin.Prevout.ScriptpubkeyAddress {
 					// fmt.Println(vin.Prevout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)
@@ -71,7 +74,7 @@ func Address() {
 
 			if vin.Prevout.ScriptpubkeyType == "v0_p2wsh" {
 				pubkey_asm := vin.Prevout.ScriptpubkeyAsm
-				address := p2wsh(pubkey_asm)
+				address := P2wsh(pubkey_asm)
 				if string(address) == vin.Prevout.ScriptpubkeyAddress {
 					// fmt.Println(vin.Prevout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)
@@ -87,7 +90,7 @@ func Address() {
 		for _, vout := range tx.Vout {
 			if vout.ScriptpubkeyType == "p2pkh" {
 				pubkey_asm := vout.ScriptpubkeyAsm
-				address := p2pkh(pubkey_asm)
+				address := P2pkh(pubkey_asm)
 				if string(address) == vout.ScriptpubkeyAddress {
 					// fmt.Println(vout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)
@@ -101,7 +104,7 @@ func Address() {
 
 			if vout.ScriptpubkeyType == "p2sh" {
 				pubkey_asm := vout.ScriptpubkeyAsm
-				address := p2sh(pubkey_asm)
+				address := P2sh(pubkey_asm)
 				if string(address) == vout.ScriptpubkeyAddress {
 					// fmt.Println(vout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)
@@ -116,7 +119,7 @@ func Address() {
 
 			if vout.ScriptpubkeyType == "v0_p2wpkh" {
 				pubkey_asm := vout.ScriptpubkeyAsm
-				address := p2wpkh(pubkey_asm)
+				address := P2wpkh(pubkey_asm)
 				if string(address) == vout.ScriptpubkeyAddress {
 					// fmt.Println(vout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)
@@ -130,7 +133,7 @@ func Address() {
 
 			if vout.ScriptpubkeyType == "v0_p2wsh" {
 				pubkey_asm := vout.ScriptpubkeyAsm
-				address := p2wsh(pubkey_asm)
+				address := P2wsh(pubkey_asm)
 				if string(address) == vout.ScriptpubkeyAddress {
 					// fmt.Println(vout.ScriptpubkeyAddress)
 					// fmt.Printf(" %s\n", address)

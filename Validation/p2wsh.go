@@ -1,10 +1,11 @@
-package main
+package Validation
 
 import (
 	"encoding/hex"
 	"strings"
 
 	"github.com/btcsuite/btcutil/bech32"
+	"github.com/pred695/code-challenge-2024-pred695/Utils"
 )
 
 /*
@@ -16,8 +17,8 @@ import (
 	        "value": 326923
 	      }
 */
-func p2wsh(scriptpubkey_asm string) []byte {
-	witness_scriptHash := ExtractHexFromScriptpubkeyAsm(strings.Split(scriptpubkey_asm, " "))
+func P2wsh(scriptpubkey_asm string) []byte {
+	witness_scriptHash := Utils.ExtractHexFromScriptpubkeyAsm(strings.Split(scriptpubkey_asm, " "))
 	witness_scriptHash_bytes, _ := hex.DecodeString(witness_scriptHash)
 	version := "00"
 	version_bytes, _ := hex.DecodeString(version)

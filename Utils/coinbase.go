@@ -1,14 +1,16 @@
-package main
+package Utils
 
-func Coinbase(netReward uint64) *Transaction {
+import "github.com/pred695/code-challenge-2024-pred695/Structs"
+
+func CreateCoinbase(netReward uint64) *Structs.Transaction {
 	witnessCommitment := CreateWitnessMerkle()
-	coinbaseTx := Transaction{
+	coinbaseTx := Structs.Transaction{
 		Version: 1,
-		Vin: []Input{
+		Vin: []Structs.Input{
 			{
 				TxID: "0000000000000000000000000000000000000000000000000000000000000000",
 				Vout: 0xffffffff,
-				Prevout: Prevout{
+				Prevout: Structs.Prevout{
 					Scriptpubkey:        "0014df4bf9f3621073202be59ae590f55f42879a21a0",
 					ScriptpubkeyAsm:     "0014df4bf9f3621073202be59ae590f55f42879a21a0",
 					ScriptpubkeyType:    "p2pkh",
@@ -21,7 +23,7 @@ func Coinbase(netReward uint64) *Transaction {
 				Witness:    []string{"0000000000000000000000000000000000000000000000000000000000000000"},
 			},
 		},
-		Vout: []Prevout{
+		Vout: []Structs.Prevout{
 			{
 				Scriptpubkey:        "0014df4bf9f3621073202be59ae590f55f42879a21a0",
 				ScriptpubkeyAsm:     "0014df4bf9f3621073202be59ae590f55f42879a21a0",

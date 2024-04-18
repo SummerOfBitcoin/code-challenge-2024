@@ -7,24 +7,26 @@
 	      "value": 2313802
 	 }
 */
-package main
+package Validation
 
 import (
 	"encoding/hex"
 	"strings"
+
+	"github.com/pred695/code-challenge-2024-pred695/Utils"
 )
 
-func p2sh(scriptpubkey_asm string) []byte {
-	hashed_script := ExtractHexFromScriptpubkeyAsm(strings.Split(scriptpubkey_asm, " "))
+func P2sh(scriptpubkey_asm string) []byte {
+	hashed_script := Utils.ExtractHexFromScriptpubkeyAsm(strings.Split(scriptpubkey_asm, " "))
 	hashed_script_bytes, _ := hex.DecodeString(hashed_script)
 	versionByte_bytes, _ := hex.DecodeString("05")
 	version_hash := append(versionByte_bytes, hashed_script_bytes...)
 
-	checksum := to_sha(to_sha(version_hash))
+	checksum := Utils.To_sha(Utils.To_sha(version_hash))
 
 	appended_checksum := append(version_hash, checksum[:4]...)
 
-	address := Base58Encode(appended_checksum)
+	address := Utils.Base58Encode(appended_checksum)
 
 	return address
 

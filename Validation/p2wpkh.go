@@ -1,10 +1,11 @@
-package main
+package Validation
 
 import (
 	"encoding/hex"
 	"strings"
 
 	"github.com/btcsuite/btcutil/bech32"
+	"github.com/pred695/code-challenge-2024-pred695/Utils"
 )
 
 /*
@@ -16,21 +17,20 @@ import (
 	      "value": 546
 	    }
 */
-func p2wpkh(scriptpubkey_asm string) []byte {
+func P2wpkh(scriptpubkey_asm string) []byte {
 
-	pubkeyHash := ExtractHexFromScriptpubkeyAsm(strings.Split(scriptpubkey_asm, " ")) //or the witness program
+	pubkeyHash := Utils.ExtractHexFromScriptpubkeyAsm(strings.Split(scriptpubkey_asm, " ")) //or the witness program
 	version := "00"
 
 	pubkeyHashBytes, _ := hex.DecodeString(pubkeyHash)
 	versionBytes, err := hex.DecodeString(version)
 
 	conv, err := bech32.ConvertBits(pubkeyHashBytes, 8, 5, true)
-	Handle(err)
+	Utils.Handle(err)
 
 	versionPubkeyHash := append(versionBytes, conv...)
 	address, err := bech32.Encode("bc", versionPubkeyHash)
-	Handle(err)
+	Utils.Handle(err)
 	return []byte(address)
 
 }
-

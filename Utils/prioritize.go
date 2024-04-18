@@ -1,4 +1,4 @@
-package main
+package Utils
 
 import (
 	"encoding/hex"
@@ -6,16 +6,11 @@ import (
 	"fmt"
 	"os"
 	"sort"
+
+	"github.com/pred695/code-challenge-2024-pred695/Structs"
 )
 
-type TxInfo struct {
-	TxID   string
-	WTxID  string
-	Fee    uint64
-	Weight uint64
-}
-
-func comp(a, b TxInfo) bool {
+func Comp(a, b Structs.TxInfo) bool {
 	return float64(a.Fee)/float64(a.Weight) > float64(b.Fee)/float64(b.Weight)
 }
 func Prioritize() (uint64, []string, []string) {
@@ -23,11 +18,11 @@ func Prioritize() (uint64, []string, []string) {
 	var permittedWTxIDs []string
 	dir := "./mempool"
 	files, _ := os.ReadDir(dir)
-	var txInfo []TxInfo
+	var txInfo []Structs.TxInfo
 	for _, file := range files {
-		txData, err := jsonData(dir + "/" + file.Name())
+		txData, err := JsonData(dir + "/" + file.Name())
 		Handle(err)
-		var tx Transaction
+		var tx Structs.Transaction
 		err = json.Unmarshal([]byte(txData), &tx)
 		var fee uint64 = 0
 		for _, vin := range tx.Vin {
@@ -36,17 +31,17 @@ func Prioritize() (uint64, []string, []string) {
 		for _, vout := range tx.Vout {
 			fee -= vout.Value
 		}
-		serialized, _ := serializeTransaction(&tx)
+		serialized, _ := SerializeTransaction(&tx)
 		segserialized, _ := SegWitSerialize(&tx)
-		txID := reverseBytes(to_sha(to_sha(serialized)))
-		wtxID := reverseBytes(to_sha(to_sha(segserialized)))
-		txInfo = append(txInfo, TxInfo{TxID: hex.EncodeToString(txID), WTxID: hex.EncodeToString(wtxID), Fee: fee, Weight: uint64(calculateWitnessSize(&tx) + CalculateBaseSize(&tx)*4)})
+		txID := ReverseBytes(To_sha(To_sha(serialized)))
+		wtxID := ReverseBytes(To_sha(To_sha(segserialized)))
+		txInfo = append(txInfo, Structs.TxInfo{TxID: hex.EncodeToString(txID), WTxID: hex.EncodeToString(wtxID), Fee: fee, Weight: uint64(CalculateWitnessSize(&tx) + CalculateBaseSize(&tx)*4)})
 
 	}
 	sort.Slice(txInfo, func(i, j int) bool {
-		return comp(txInfo[i], txInfo[j])
+		return Comp(txInfo[i], txInfo[j])
 	})
-	var PermissibleTxs []TxInfo
+	var PermissibleTxs []Structs.TxInfo
 	var PermissibleWeight uint64 = 3999300
 	var reward uint64 = 0
 	for _, tx := range txInfo {
