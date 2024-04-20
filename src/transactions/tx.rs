@@ -18,3 +18,12 @@ pub struct Tx{
     vin: TxInput,
     tx_size: u64, 
 }
+
+
+impl Tx{
+    fn Tx(tx_input: TxInput, tx_output: T) -> Self {
+        Self {
+            vin: tx_input
+        }
+    }
+}

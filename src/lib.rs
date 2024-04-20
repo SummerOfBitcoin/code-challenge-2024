@@ -1,5 +1,5 @@
 // use std::env;
-use std::{fs, io};
+use std::{fs, io, fs::File};
 use serde_json;
 
 pub fn read_mempool(path: &str){
@@ -8,12 +8,15 @@ pub fn read_mempool(path: &str){
         .expect("Error while reading Dir");
     
     for file in files{
-        let path = path.to_string() + &file;
-        // println!("{path}");
+        let file_path = path.to_string() + &file;
+        let file: File = File::create(&file_path).unwrap();
+        let file_size = fs::metadata(&file_path).expect("Falha ao ler o arquivo");
+        // file.sync_all();
+        println!("Size: {} ", file_size.len());
+        // println!("Size: {} File: {}", file);
+        // let transaction: serde_json::Value= read_tx_from_file(&file_path);
 
-        let transaction: serde_json::Value= read_tx_from_file(&path);
-
-        is_coinbase(transaction);
+        // is_coinbase(transaction);
 
     }
     // is_coinbase(tx_in_json);
