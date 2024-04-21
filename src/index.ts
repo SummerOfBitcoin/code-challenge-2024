@@ -34,15 +34,7 @@ export class MineBlock {
     this.ended = Date.now();
 
     console.log("Block mined", this.block.hash, `in ${this.hashes} iterations`);
-    console.log("timetaken", this.duration);
-    console.log(
-      this.block.transactions[0],
-      this.block.transactions[1],
-      this.block.transactions[2],
-      this.block.transactions[3],
-      this.block.transactions[4],
-      this.block.transactions[5]
-    );
+  
   }
 
   private isValidHash(hash: string, difficulty: bigint): boolean {
