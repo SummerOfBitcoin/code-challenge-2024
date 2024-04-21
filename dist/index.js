@@ -54,7 +54,6 @@ class MineBlock {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Finding block hash...");
             console.log("Nonce", "Block Hash");
             while (!this.isValidHash(this.block.hash, BigInt(this.difficulty))) {
                 this.block.nonce++;
@@ -64,8 +63,6 @@ class MineBlock {
             }
             this.ended = Date.now();
             console.log("Block mined", this.block.hash, `in ${this.hashes} iterations`);
-            console.log("timetaken", this.duration);
-            console.log(this.block.transactions[0], this.block.transactions[1], this.block.transactions[2], this.block.transactions[3], this.block.transactions[4], this.block.transactions[5]);
         });
     }
     isValidHash(hash, difficulty) {

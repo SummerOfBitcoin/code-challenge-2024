@@ -22,13 +22,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sha256ripemd160 = exports.readUInt32LE = exports.readUInt16LE = exports.deserializeVarInt = exports.varIntSize = exports.readUInt64LE = exports.readInt64LE = exports.serializeVarInt = exports.getVarIntBuffer = exports.varUintBytes = exports.uint8ArrayToHexString = exports.bufferToBigInt = exports.bigIntTo32Buffer = exports.hashBuffer = exports.doubleSHA256 = exports.SHA256 = exports.ripemd160 = exports.bytesToHex = exports.hash160 = exports.bufferToHex = exports.bufferEqual = void 0;
+exports.sha256ripemd160 = exports.readUInt32LE = exports.readUInt16LE = exports.deserializeVarInt = exports.varIntSize = exports.readUInt64LE = exports.readInt64LE = exports.serializeVarInt = exports.getVarIntBuffer = exports.varUintBytes = exports.uint8ArrayToHexString = exports.bufferToBigInt = exports.bigIntTo32Buffer = exports.hashBuffer = exports.doubleSHA256 = exports.SHA256 = exports.bytesToHex = exports.bufferToHex = exports.bufferEqual = void 0;
 const crypto_1 = require("crypto");
-const ripemd160_1 = __importDefault(require("ripemd160"));
+// import ripemd160lib from 'ripemd160';
 const varUint = __importStar(require("varuint-bitcoin"));
 function bufferEqual(a, b) {
     if (a.byteLength !== b.byteLength)
@@ -44,18 +41,16 @@ function bufferToHex(buffer) {
     return Buffer.from(buffer).toString('hex');
 }
 exports.bufferToHex = bufferToHex;
-function hash160(buffer) {
-    return ripemd160(SHA256(buffer));
-}
-exports.hash160 = hash160;
+// export function hash160(buffer: Uint8Array): Buffer {
+//     return ripemd160(SHA256(buffer));
+// }
 function bytesToHex(bytes) {
     return Buffer.from(bytes).toString('hex');
 }
 exports.bytesToHex = bytesToHex;
-function ripemd160(buffer) {
-    return new ripemd160_1.default().update(buffer).digest();
-}
-exports.ripemd160 = ripemd160;
+// export function ripemd160(buffer: Uint8Array): Buffer {
+//     return new ripemd160lib().update(buffer).digest();
+// }
 function SHA256(buffer) {
     return (0, crypto_1.createHash)('sha256').update(buffer).digest();
 }
