@@ -4,13 +4,6 @@ exports.Blockchain = void 0;
 class Blockchain {
     constructor() {
         this.chain = [];
-        // public createBlock(): Block {
-        //   // const block = new Block(
-        //   //   this.getHead().hash,
-        //   // );
-        //   this.addBlock(block);
-        //   return block;
-        // }
     }
     getHead() {
         return this.chain[this.chain.length - 1];

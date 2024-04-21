@@ -1,32 +1,7 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sha256ripemd160 = exports.readUInt32LE = exports.readUInt16LE = exports.deserializeVarInt = exports.varIntSize = exports.readUInt64LE = exports.readInt64LE = exports.serializeVarInt = exports.getVarIntBuffer = exports.varUintBytes = exports.uint8ArrayToHexString = exports.bufferToBigInt = exports.bigIntTo32Buffer = exports.hashBuffer = exports.doubleSHA256 = exports.SHA256 = exports.bytesToHex = exports.bufferToHex = exports.bufferEqual = void 0;
+exports.sha256ripemd160 = exports.readUInt32LE = exports.readUInt16LE = exports.deserializeVarInt = exports.varIntSize = exports.readUInt64LE = exports.readInt64LE = exports.serializeVarInt = exports.getVarIntBuffer = exports.uint8ArrayToHexString = exports.bufferToBigInt = exports.bigIntTo32Buffer = exports.hashBuffer = exports.doubleSHA256 = exports.SHA256 = exports.bytesToHex = exports.bufferToHex = exports.bufferEqual = void 0;
 const crypto_1 = require("crypto");
-// import ripemd160lib from 'ripemd160';
-const varUint = __importStar(require("varuint-bitcoin"));
 function bufferEqual(a, b) {
     if (a.byteLength !== b.byteLength)
         return false;
@@ -41,16 +16,10 @@ function bufferToHex(buffer) {
     return Buffer.from(buffer).toString('hex');
 }
 exports.bufferToHex = bufferToHex;
-// export function hash160(buffer: Uint8Array): Buffer {
-//     return ripemd160(SHA256(buffer));
-// }
 function bytesToHex(bytes) {
     return Buffer.from(bytes).toString('hex');
 }
 exports.bytesToHex = bytesToHex;
-// export function ripemd160(buffer: Uint8Array): Buffer {
-//     return new ripemd160lib().update(buffer).digest();
-// }
 function SHA256(buffer) {
     return (0, crypto_1.createHash)('sha256').update(buffer).digest();
 }
@@ -81,10 +50,6 @@ function uint8ArrayToHexString(uint8Array) {
     }).join('');
 }
 exports.uint8ArrayToHexString = uint8ArrayToHexString;
-function varUintBytes(n) {
-    return varUint.encodingLength(n);
-}
-exports.varUintBytes = varUintBytes;
 function getVarIntBuffer(value) {
     if (value < 0xfd) {
         return Buffer.from([value]);
