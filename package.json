@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "tsc-watch --onSuccess \"nodemon dist/index.js\"",
+    "dev": "node dist/index.js\"",
     "build": "tsc -p .",
     "start": "node dist/index.js"
   },
