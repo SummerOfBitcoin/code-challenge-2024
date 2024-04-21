@@ -29,7 +29,6 @@ class BitcoinScript {
                     isValidInput = p2wpkh.execute(scriptPubKey, witness, i);
                     break;
                 default:
-                    console.error("Unsupported script type:", scripttype);
                     break;
             }
             if (!isValidInput) {
