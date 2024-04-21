@@ -1,8 +1,7 @@
 import * as fs from "fs";
 import { Transaction } from "./transaction";
-import { BlockTransaction, TransactionData, TxIn, TxOut } from "./interface";
+import { BlockTransaction } from "./interface";
 import { Blockchain } from "./blockchain";
-import { BitcoinReader } from "./buffer";
 import { Block } from "./block";
 import { MemoryPool } from "./memorypool";
 import { Validator } from "./validate";
@@ -24,7 +23,6 @@ export class MineBlock {
   }
 
   async start() {
-    console.log("Finding block hash...");
     console.log("Nonce", "Block Hash");
 
     while (!this.isValidHash(this.block.hash, BigInt(this.difficulty))) {

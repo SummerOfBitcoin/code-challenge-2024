@@ -1,7 +1,7 @@
 import { BlockTransaction } from "./interface";
 import { constructMerkleTree } from "./merkleRoot";
 import { Transaction } from "./transaction";
-import { doubleSHA256, uint8ArrayToHexString } from "./utils";
+import { doubleSHA256 } from "./utils";
 export const BTC = 100000000; // Number of blocks before a coinbase transaction can be spent
 export const BLOCK_VERSION = 2; // Current Bitcoin block version
 export const EMPTY_SCRIPT = new Uint8Array([0x00]);

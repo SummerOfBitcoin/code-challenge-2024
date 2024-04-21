@@ -4,7 +4,7 @@ import {
   FormattedWitness,
   TransactionData,
 } from "./interface";
-import { getVarIntBuffer, hash160, serializeVarInt } from "./utils";
+import { getVarIntBuffer, serializeVarInt } from "./utils";
 export class Prevout {
   public scriptpubkey: string;
   public scriptpubkey_asm: string;
