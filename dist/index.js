@@ -54,11 +54,9 @@ class MineBlock {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Nonce", "Block Hash");
             while (!this.isValidHash(this.block.hash, BigInt(this.difficulty))) {
                 this.block.nonce++;
                 this.block.hash = this.block.calculateHash().toString("hex");
-                console.log(this.block.nonce, ":", this.block.hash);
                 this.hashes++;
             }
             this.ended = Date.now();
