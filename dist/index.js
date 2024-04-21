@@ -57,6 +57,7 @@ class MineBlock {
             while (!this.isValidHash(this.block.hash, BigInt(this.difficulty))) {
                 this.block.nonce++;
                 this.block.hash = this.block.calculateHash().toString("hex");
+                // console.log(this.block.nonce, ":", this.block.hash);
                 this.hashes++;
             }
             this.ended = Date.now();
@@ -64,7 +65,10 @@ class MineBlock {
         });
     }
     isValidHash(hash, difficulty) {
-        return BigInt("0x" + hash) < difficulty;
+        const maxTarget = BigInt("0x00000000ffff0000000000000000000000000000000000000000000000000000");
+        const target = maxTarget / difficulty;
+        const hashBigInt = BigInt(`0x${hash}`);
+        return hashBigInt < target;
     }
 }
 exports.MineBlock = MineBlock;
@@ -76,7 +80,7 @@ class MiningSimulation {
     mine(chain) {
         return __awaiter(this, void 0, void 0, function* () {
             const coinbase = (0, coinbase_1.coinbaseTX)();
-            const target = "0x0000ffff00000000000000000000000000000000000000000000000000000000";
+            const target = "0x1f00ffff";
             const validtransaction = this.getValidTransactions();
             const block = new block_1.Block("0".repeat(64), validtransaction, target);
             const { serializeCoinbase } = block.addCoinbaseTransaction(coinbase);
@@ -85,8 +89,10 @@ class MiningSimulation {
             yield mineBlock.start();
             chain.addBlock(block);
             const txids = block.transactions.map((tx) => tx.txid);
-            const output = `${block.constructHeaderBuffer().toString('hex')}\n${serializeCoinbase}\n${txids.join('\n')}`;
-            fs.writeFileSync('output.txt', output);
+            const output = `${block
+                .constructHeaderBuffer()
+                .toString("hex")}\n${serializeCoinbase}\n${txids.join("\n")}`;
+            fs.writeFileSync("output.txt", output);
             console.log(chain);
         });
     }
