@@ -54,14 +54,13 @@ class MineBlock {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            while (BigInt(`0x${this.block.hash}`) > BigInt(this.difficulty)) {
+            while (BigInt(`0x${this.block.hash}`) > BigInt("0x" + this.difficulty)) {
                 this.block.nonce++;
                 this.block.hash = this.block.calculateHash().toString("hex");
-                // console.log(this.block.nonce, ":", this.block.hash);
                 this.hashes++;
             }
             this.ended = Date.now();
-            // console.log("Block mined", this.block.hash, `in ${this.hashes} iterations`);
+            console.log("Block mined", this.block.hash, `in ${this.hashes} iterations`);
         });
     }
     isValidHash(hash, difficulty) {
@@ -80,7 +79,7 @@ class MiningSimulation {
     mine(chain) {
         return __awaiter(this, void 0, void 0, function* () {
             const coinbase = (0, coinbase_1.coinbaseTX)();
-            const target = "0x0000ffff00000000000000000000000000000000000000000000000000000000";
+            const target = "0000ffff00000000000000000000000000000000000000000000000000000000";
             const validtransaction = this.getValidTransactions();
             const block = new block_1.Block("0".repeat(64), validtransaction, target);
             const { serializeCoinbase } = block.addCoinbaseTransaction(coinbase);

@@ -81,6 +81,7 @@ class Block {
         tx.vout[1].scriptpubkey = `6a24aa21a9ed${this.getwtxidCommitment().toString("hex")}`;
         console.log("Coinbase", tx.getTxId());
         this.transactions.unshift(tx.getTx());
+        this.txCount++;
         return { serializeCoinbase: tx.serializeWithWitness() };
     }
     getwtxidCommitment() {
