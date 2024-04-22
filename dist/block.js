@@ -5,7 +5,7 @@ const merkleRoot_1 = require("./merkleRoot");
 const transaction_1 = require("./transaction");
 const utils_1 = require("./utils");
 exports.BTC = 100000000; // Number of blocks before a coinbase transaction can be spent
-exports.BLOCK_VERSION = 2; // Current Bitcoin block version
+exports.BLOCK_VERSION = 4; // Current Bitcoin block version
 exports.EMPTY_SCRIPT = new Uint8Array([0x00]);
 exports.BLOCK_SUBSIDY = 6.25; // Empty script
 class Block {
@@ -47,8 +47,8 @@ class Block {
             (this.version >> 16) & 0xff,
             (this.version >> 24) & 0xff,
         ]));
-        buffers.push(Buffer.from(this.previousHash, "hex"));
-        buffers.push(Buffer.from(this.merkleRoot, "hex"));
+        buffers.push(Buffer.from(this.previousHash, "hex").reverse());
+        buffers.push(Buffer.from(this.merkleRoot, "hex").reverse());
         const timestampBytes = Buffer.alloc(4);
         timestampBytes.writeInt32LE(this.timestamp);
         buffers.push(timestampBytes);
@@ -101,6 +101,13 @@ class Block {
         }
         const txids = transactions.map((el) => el.txid);
         return (0, merkleRoot_1.constructMerkleTree)(txids).toString("hex");
+    }
+    getTarget() {
+        const bits = parseInt('0x' + this.bits, 16);
+        const exponent = bits >> 24;
+        const mantissa = bits & 0xFFFFFF;
+        const target = (mantissa * (2 ** (8 * (exponent - 3)))).toString(16);
+        return Buffer.from('0'.repeat(64 - target.length) + target, 'hex');
     }
 }
 exports.Block = Block;
