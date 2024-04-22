@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Block = exports.BLOCK_SUBSIDY = exports.EMPTY_SCRIPT = exports.BLOCK_VERSION = exports.BTC = void 0;
+const buffer_1 = require("./buffer");
 const merkleRoot_1 = require("./merkleRoot");
 const transaction_1 = require("./transaction");
 const utils_1 = require("./utils");
@@ -15,8 +16,8 @@ class Block {
         this.version = exports.BLOCK_VERSION;
         this.previousHash = previousHash;
         this.merkleRoot = this.calculateMerkleRoot(transaction);
-        this.timestamp = Math.floor(Date.now() / 1000);
-        this.nonce = 20000000;
+        this.timestamp = Math.ceil(Date.now() / 1000);
+        this.nonce = 2880808;
         this.bits = bits;
         this.txCount = transaction.length;
         this.transactions = transaction;
@@ -41,24 +42,16 @@ class Block {
         return bits;
     }
     headerBuffer() {
-        const buffers = [];
-        buffers.push(Buffer.from([
-            this.version & 0xff,
-            (this.version >> 8) & 0xff,
-            (this.version >> 16) & 0xff,
-            (this.version >> 24) & 0xff,
-        ]));
-        buffers.push(Buffer.from(this.previousHash, "hex").reverse());
-        buffers.push(Buffer.from(this.merkleRoot, "hex").reverse());
-        const timestampBytes = Buffer.alloc(4);
-        timestampBytes.writeInt32LE(this.timestamp);
-        buffers.push(timestampBytes);
-        buffers.push(Buffer.from("1f00ffff", "hex"));
-        const nonceBytes = Buffer.alloc(4);
-        nonceBytes.writeUInt32LE(this.nonce);
-        buffers.push(nonceBytes);
-        const blockheader = Buffer.concat(buffers);
-        return blockheader;
+        const buffer = Buffer.allocUnsafe(80);
+        const writer = new buffer_1.BitcoinWriter(buffer);
+        writer.writeUint32(this.version);
+        writer.writeBuffer(Buffer.from(this.previousHash, "hex").reverse());
+        writer.writeBuffer(Buffer.from(this.merkleRoot, "hex").reverse());
+        writer.writeUint32(this.timestamp);
+        writer.writeBuffer(Buffer.from(this.bits, 'hex').reverse());
+        writer.writeUint32(this.nonce);
+        console.log(buffer.toString('hex'));
+        return buffer;
     }
     createTransaction(tx) {
         const transaction = new transaction_1.Transaction(tx);
