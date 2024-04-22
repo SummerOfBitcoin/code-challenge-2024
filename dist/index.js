@@ -39,6 +39,7 @@ const block_1 = require("./block");
 const memorypool_1 = require("./memorypool");
 const validate_1 = require("./validate");
 const coinbase_1 = require("./coinbase");
+const utils_1 = require("./utils");
 exports.BLOCK_SUBSIDY = 1250000000;
 class MineBlock {
     constructor(chain, block, difficulty) {
@@ -55,9 +56,12 @@ class MineBlock {
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             const target = BigInt("0x" + this.difficulty);
+            const header = Buffer.from(this.block.headerBuffer());
+            let hash = (0, utils_1.doubleSHA256)(header).toString('hex');
             while (BigInt(`0x${this.block.hash}`) >= target) {
-                this.block.nonce++;
-                this.block.hash = this.block.calculateHash().toString("hex");
+                this.block.nonce += 1;
+                header.writeUInt32LE(this.block.nonce, 80 - 4);
+                this.block.hash = this.block.calculateHash().toString('hex');
                 this.hashes++;
                 if (this.hashes % 1000000 === 0) {
                     console.log(`Iteration ${this.hashes}: ${this.block.hash}`);
@@ -92,7 +96,7 @@ class MiningSimulation {
             chain.addBlock(block);
             const txids = block.transactions.map((tx) => tx.txid);
             const output = `${block
-                .constructHeaderBuffer()
+                .headerBuffer()
                 .toString("hex")}\n${serializeCoinbase}\n${txids.join("\n")}`;
             fs.writeFileSync("output.txt", output);
             console.log(chain);

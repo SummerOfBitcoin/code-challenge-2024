@@ -16,7 +16,7 @@ class Block {
         this.previousHash = previousHash;
         this.merkleRoot = this.calculateMerkleRoot(transaction);
         this.timestamp = Math.floor(Date.now() / 1000);
-        this.nonce = 3808290;
+        this.nonce = 14049409;
         this.bits = "1f00ffff";
         this.txCount = transaction.length;
         this.transactions = transaction;
@@ -27,7 +27,7 @@ class Block {
         return difficulty;
     }
     calculateHash() {
-        const headerHex = this.constructHeaderBuffer();
+        const headerHex = this.headerBuffer();
         return (0, utils_1.doubleSHA256)(headerHex);
     }
     constructBits(target) {
@@ -40,7 +40,7 @@ class Block {
         console.log(bits);
         return bits;
     }
-    constructHeaderBuffer() {
+    headerBuffer() {
         const buffers = [];
         buffers.push(Buffer.from([
             this.version & 0xff,
