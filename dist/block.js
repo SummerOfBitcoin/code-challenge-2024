@@ -16,7 +16,7 @@ class Block {
         this.previousHash = previousHash;
         this.merkleRoot = this.calculateMerkleRoot(transaction);
         this.timestamp = Math.floor(Date.now() / 1000);
-        this.nonce = 2049409;
+        this.nonce = 20000000;
         this.bits = bits;
         this.txCount = transaction.length;
         this.transactions = transaction;
