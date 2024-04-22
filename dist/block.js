@@ -17,11 +17,11 @@ class Block {
         this.merkleRoot = this.calculateMerkleRoot(transaction);
         this.timestamp = Math.floor(Date.now() / 1000);
         this.nonce = 14049409;
-        this.bits = "1f00ffff";
+        this.bits = bits;
         this.txCount = transaction.length;
         this.transactions = transaction;
         this.totalfees = this.calculateblockFees(transaction);
-        this.hash = this.calculateHash().toString("hex");
+        this.hash = '';
     }
     setTarget(difficulty) {
         return difficulty;

@@ -57,11 +57,11 @@ class MineBlock {
         return __awaiter(this, void 0, void 0, function* () {
             const target = BigInt("0x" + this.difficulty);
             const header = Buffer.from(this.block.headerBuffer());
-            let hash = (0, utils_1.doubleSHA256)(header).toString('hex');
+            this.block.hash = (0, utils_1.doubleSHA256)(header).toString('hex');
             while (BigInt(`0x${this.block.hash}`) >= target) {
                 this.block.nonce += 1;
                 header.writeUInt32LE(this.block.nonce, 80 - 4);
-                this.block.hash = this.block.calculateHash().toString('hex');
+                this.block.hash = (0, utils_1.doubleSHA256)(header).toString('hex');
                 this.hashes++;
                 if (this.hashes % 1000000 === 0) {
                     console.log(`Iteration ${this.hashes}: ${this.block.hash}`);
@@ -88,7 +88,7 @@ class MiningSimulation {
             const coinbase = (0, coinbase_1.coinbaseTX)();
             const target = "0000ffff00000000000000000000000000000000000000000000000000000000";
             const validtransaction = this.getValidTransactions();
-            const block = new block_1.Block("0".repeat(64), validtransaction, target);
+            const block = new block_1.Block("0".repeat(64), validtransaction, "1f00ffff");
             const { serializeCoinbase } = block.addCoinbaseTransaction(coinbase);
             const mineBlock = new MineBlock(chain, block, target);
             console.log(`Start mining of ${block.transactions.length} transactions with of 12.5 BTC`);
