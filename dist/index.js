@@ -58,7 +58,7 @@ class MineBlock {
             const target = BigInt("0x" + this.difficulty);
             const header = this.block.headerBuffer();
             this.block.hash = (0, utils_1.doubleSHA256)(header).toString('hex');
-            while (BigInt(`0x${this.block.hash}`) <= target) {
+            while (BigInt(`0x${this.block.hash}`) >= target) {
                 this.block.nonce += 1;
                 header.writeUInt32LE(this.block.nonce, 80 - 4);
                 this.block.hash = (0, utils_1.doubleSHA256)(header).toString('hex');

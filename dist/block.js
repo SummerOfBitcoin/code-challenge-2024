@@ -48,7 +48,7 @@ class Block {
         writer.writeBuffer(Buffer.from(this.previousHash, "hex").reverse());
         writer.writeBuffer(Buffer.from(this.merkleRoot, "hex").reverse());
         writer.writeUint32(this.timestamp);
-        writer.writeBuffer(Buffer.from(this.bits, 'hex').reverse());
+        writer.writeBuffer(Buffer.from(this.bits, 'hex'));
         writer.writeUint32(this.nonce);
         console.log(buffer.toString('hex'));
         return buffer;
