@@ -54,12 +54,15 @@ class MineBlock {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            while (BigInt(`0x${this.block.hash}`) > BigInt("0x" + this.difficulty)) {
+            const target = BigInt("0x" + this.difficulty);
+            while (BigInt(`0x${this.block.hash}`) >= target) {
                 this.block.nonce++;
                 this.block.hash = this.block.calculateHash().toString("hex");
                 this.hashes++;
+                if (this.hashes % 1000000 === 0) {
+                    console.log(`Iteration ${this.hashes}: ${this.block.hash}`);
+                }
             }
-            this.ended = Date.now();
             console.log("Block mined", this.block.hash, `in ${this.hashes} iterations`);
         });
     }
