@@ -16,10 +16,11 @@ class Block {
         this.previousHash = previousHash;
         this.merkleRoot = this.calculateMerkleRoot(transaction);
         this.timestamp = Math.floor(Date.now() / 1000);
-        this.nonce = 0;
+        this.nonce = 40000;
         this.bits = "1f00ffff";
         this.txCount = transaction.length;
         this.transactions = transaction;
+        this.totalfees = this.calculateblockFees(transaction);
         this.hash = this.calculateHash().toString("hex");
     }
     setTarget(difficulty) {
@@ -64,9 +65,12 @@ class Block {
         this.addTransaction(transaction.getTx());
         return transaction;
     }
-    calculateblockFees() {
+    calculateblockFees(transaction) {
         let totalFee = 0;
-        this.transactions.forEach((transaction) => totalFee + transaction.fee);
+        for (const tx of transaction) {
+            totalFee += tx.fee;
+        }
+        console.log("TotalFee", totalFee);
         return totalFee;
     }
     addTransaction(transaction) {
@@ -77,7 +81,7 @@ class Block {
     }
     calculateWeight() { }
     addCoinbaseTransaction(tx) {
-        tx.vout[0].value += this.calculateblockFees();
+        tx.vout[0].value += this.totalfees;
         tx.vout[1].scriptpubkey = `6a24aa21a9ed${this.getwtxidCommitment().toString("hex")}`;
         console.log("Coinbase", tx.getTxId());
         this.transactions.unshift(tx.getTx());
