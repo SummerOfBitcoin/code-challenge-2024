@@ -59,6 +59,7 @@ class MineBlock {
                 this.block.nonce++;
                 this.block.hash = this.block.calculateHash().toString("hex");
                 this.hashes++;
+                console.log(this.block.nonce, ":", this.block.hash);
                 if (this.hashes % 1000000 === 0) {
                     console.log(`Iteration ${this.hashes}: ${this.block.hash}`);
                 }
