@@ -58,7 +58,6 @@ export class Miner {
       validtransaction,
       BigInt(0x1f00ffff)
     );
-    console.log(block.headerBuffer().toString("hex"));
     const { serializeCoinbase } = block.addCoinbaseTransaction(coinbase);
     const mineBlock = new MineBlock(chain, block, "");
     console.log(
@@ -68,9 +67,12 @@ export class Miner {
     await mineBlock.start();
     chain.addBlock(block);
     const txids = block.transactions.map((tx) => tx.txid);
+      const reversedTxids = txids.map((txid) =>
+      txid.match(/.{2}/g)?.reverse()?.join("") || ""
+    );
     const output = `${block
       .headerBuffer()
-      .toString("hex")}\n${serializeCoinbase}\n${txids.join("\n")}`;
+      .toString("hex")}\n${serializeCoinbase}\n${reversedTxids.join("\n")}`;
     fs.writeFileSync("output.txt", output);
     // fs.writeFileSync('test.ts',`export const txids = ${JSON.stringify(txids)};`)
     console.log(chain);

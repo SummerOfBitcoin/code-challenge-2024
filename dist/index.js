@@ -89,16 +89,16 @@ class Miner {
             const coinbase = (0, coinbase_1.coinbaseTX)();
             const validtransaction = this.getValidTransactions();
             const block = new block_1.Block("0".repeat(64), validtransaction, BigInt(0x1f00ffff));
-            console.log(block.headerBuffer().toString("hex"));
             const { serializeCoinbase } = block.addCoinbaseTransaction(coinbase);
             const mineBlock = new MineBlock(chain, block, "");
             console.log(`Start mining of ${block.transactions.length} transactions with of 12.5 BTC`);
             yield mineBlock.start();
             chain.addBlock(block);
             const txids = block.transactions.map((tx) => tx.txid);
+            const reversedTxids = txids.map((txid) => { var _a, _b; return ((_b = (_a = txid.match(/.{2}/g)) === null || _a === void 0 ? void 0 : _a.reverse()) === null || _b === void 0 ? void 0 : _b.join("")) || ""; });
             const output = `${block
                 .headerBuffer()
-                .toString("hex")}\n${serializeCoinbase}\n${txids.join("\n")}`;
+                .toString("hex")}\n${serializeCoinbase}\n${reversedTxids.join("\n")}`;
             fs.writeFileSync("output.txt", output);
             // fs.writeFileSync('test.ts',`export const txids = ${JSON.stringify(txids)};`)
             console.log(chain);

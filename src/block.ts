@@ -98,9 +98,7 @@ export class Block {
     wtxids.unshift("0".repeat(64)); /// for coinbase
     return calualateMerkleRoot(wtxids);
   }
-  // private updateMerkleRoot(transaction: BlockTransaction[]): void {
-  //   this.merkleRoot = this.getmerkleRoot(transaction);
-  // }
+  
   private getmerkleRoot(transactions:BlockTransaction[]){
     if (transactions.length === 0) {
       throw new Error("empty transactions for create merkle root");
