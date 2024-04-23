@@ -1,18 +1,18 @@
-#![allow(dead_code)]
+#![allow(dead_code, unused)]
 mod block;
 use block::block_header::BlockHeader;
 use chrono::Utc;
-use mining_challenge::read_mempool;
+use mining_challenge::{read_mempool, read_tx_from_file};
 use ring::digest::{Context, Digest, SHA256};
 use std::fmt::Write;
 // use hex_literal::hex;
 use std::fs;
+// use transactions::tx;
 
 fn main() {
-    let file_size = fs::metadata("/home/gabriel/projects/bitcoin-mining-challenge/mempool/ff73248e38bfcdac87261f5a51f3143478937fda6b0d1def46e794b8f250e6dd.json").expect("Falha ao ler o arquivo");
-    println!("Size: {} ", file_size.len());
-    // read_mempool("/home/gabriel/projects/bitcoin-mining-challenge/mempool/");
-    // for 
+    // let file_size = fs::metadata("/home/gabriel/projects/bitcoin-mining-challenge/mempool/ff73248e38bfcdac87261f5a51f3143478937fda6b0d1def46e794b8f250e6dd.json").expect("Falha ao ler o arquivo");
+    // println!("Size: {} ", file_size.len());
+    read_mempool("/home/gabriel/projects/bitcoin-mining-challenge/mempool/");
 
     // let mut hasher = Sha256::new();
     let first_block_header: BlockHeader = BlockHeader::new(String::from("00000000000000000000000000000000"), String::from("00000000000000000000000000000000"), Utc::now(), 128);
@@ -25,7 +25,10 @@ fn main() {
 
     let mut nonce: u64 = 0_u64;
 
+    let teste_string: String = String::from("teste");
 
+    println!("{}", teste_string.len());
+    
 
     // loop{
 
