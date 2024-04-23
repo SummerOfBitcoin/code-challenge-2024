@@ -69,7 +69,7 @@ export class Block {
   addTransaction(transaction: BlockTransaction): number {
     this.transactions.push(transaction);
     this.txCount = this.transactions.length;
-    this.updateMerkleRoot(this.transactions);
+    this.merkleRoot=this.getmerkleRoot(this.transactions)
     return this.txCount;
   }
   private calculateWeight() {}
@@ -81,7 +81,7 @@ export class Block {
     )}`;
     console.log("Coinbase", tx.getTxId());
     this.transactions.unshift(tx.getTx());
-    this.updateMerkleRoot(this.transactions);
+    this.merkleRoot=this.getmerkleRoot(this.transactions);
     this.txCount++;
     return {serializeCoinbase:tx.serializeWithWitness()}
   }
@@ -98,9 +98,9 @@ export class Block {
     wtxids.unshift("0".repeat(64)); /// for coinbase
     return calualateMerkleRoot(wtxids);
   }
-  private updateMerkleRoot(transaction: BlockTransaction[]): void {
-    this.merkleRoot = this.getmerkleRoot(transaction);
-  }
+  // private updateMerkleRoot(transaction: BlockTransaction[]): void {
+  //   this.merkleRoot = this.getmerkleRoot(transaction);
+  // }
   private getmerkleRoot(transactions:BlockTransaction[]){
     if (transactions.length === 0) {
       throw new Error("empty transactions for create merkle root");

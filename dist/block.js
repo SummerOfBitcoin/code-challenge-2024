@@ -58,7 +58,7 @@ class Block {
     addTransaction(transaction) {
         this.transactions.push(transaction);
         this.txCount = this.transactions.length;
-        this.updateMerkleRoot(this.transactions);
+        this.merkleRoot = this.getmerkleRoot(this.transactions);
         return this.txCount;
     }
     calculateWeight() { }
@@ -67,7 +67,7 @@ class Block {
         tx.vout[1].scriptpubkey = `6a24aa21a9ed${this.getwtxidCommitment().toString("hex")}`;
         console.log("Coinbase", tx.getTxId());
         this.transactions.unshift(tx.getTx());
-        this.updateMerkleRoot(this.transactions);
+        this.merkleRoot = this.getmerkleRoot(this.transactions);
         this.txCount++;
         return { serializeCoinbase: tx.serializeWithWitness() };
     }
@@ -80,9 +80,9 @@ class Block {
         wtxids.unshift("0".repeat(64)); /// for coinbase
         return (0, merkleRoot_1.calualateMerkleRoot)(wtxids);
     }
-    updateMerkleRoot(transaction) {
-        this.merkleRoot = this.getmerkleRoot(transaction);
-    }
+    // private updateMerkleRoot(transaction: BlockTransaction[]): void {
+    //   this.merkleRoot = this.getmerkleRoot(transaction);
+    // }
     getmerkleRoot(transactions) {
         if (transactions.length === 0) {
             throw new Error("empty transactions for create merkle root");

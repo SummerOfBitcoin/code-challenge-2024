@@ -22,17 +22,23 @@ export class MineBlock {
   get duration(): number {
     return this.ended - this.started;
   }
-
+   reverseBytes(hexString: string): string {
+    if (hexString.length % 2 !== 0) {
+        throw new Error("Hexadecimal string length must be even.");
+    }
+    const reversedHexString = hexString.match(/.{2}/g)?.reverse()?.join("") || "";
+    return reversedHexString;
+}
   async start() {
     const header = this.block.headerBuffer();
     this.block.hash = doubleSHA256(header).toString("hex");
     while (
-      BigInt('0x'+this.block.hash) > this.block.difficulty &&
+      BigInt('0x'+this.reverseBytes(this.block.hash)) > this.block.difficulty &&
       this.block.nonce < this.MAX_NONCE
     ) {
       this.block.nonce++;
       header.writeUInt32LE(this.block.nonce, 80 - 4);
-      this.block.hash = doubleSHA256(header).toString("hex");
+      this.block.hash = doubleSHA256(header).toString("hex")
       this.hashes++;
       // console.log(this.block.nonce, this.block.hash);
     }
