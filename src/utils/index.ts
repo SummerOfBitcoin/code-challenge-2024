@@ -1,6 +1,4 @@
 import { createHash } from 'crypto';
-// import ripemd160lib from 'ripemd160';
-import * as varUint from "varuint-bitcoin";
 
 
 export function bufferEqual(a: Uint8Array, b: Uint8Array): boolean {
@@ -14,9 +12,6 @@ export function bufferToHex(buffer: Uint8Array): string {
     return Buffer.from(buffer).toString('hex');
 }
 
-// export function hash160(buffer: Uint8Array): Buffer {
-//     return ripemd160(SHA256(buffer));
-// }
 
 
 
@@ -29,9 +24,8 @@ export function bytesToHex(bytes: Uint8Array): string {
 
 
 
-// export function ripemd160(buffer: Uint8Array): Buffer {
-//     return new ripemd160lib().update(buffer).digest();
-// }
+
+
 
 export function SHA256(buffer: Uint8Array): Buffer {
     return createHash('sha256').update(buffer).digest();
@@ -57,15 +51,14 @@ export function bufferToBigInt(buffer: Uint8Array): bigint {
 }
 
 
+
 export function uint8ArrayToHexString(uint8Array:Uint8Array) {
     return Array.prototype.map.call(uint8Array, function(byte) {
         return ('0' + (byte & 0xFF).toString(16)).slice(-2);
     }).join('');
 }
 
-export function varUintBytes(n: number): number {
-    return varUint.encodingLength(n);
-  }
+
 
 export function getVarIntBuffer(value: number): Buffer {
     if (value < 0xfd) {

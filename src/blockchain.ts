@@ -1,5 +1,4 @@
 import { Block } from "./block";
-import { Transaction } from "./transaction";
 export class Blockchain {
   public chain: Block[] = [];
   public getHead(): Block {
@@ -13,11 +12,4 @@ export class Blockchain {
     this.chain.push(block);
     console.log("new Block Successfully minied");
   }
-  // public createBlock(): Block {
-  //   // const block = new Block(
-  //   //   this.getHead().hash,
-  //   // );
-  //   this.addBlock(block);
-  //   return block;
-  // }
 }

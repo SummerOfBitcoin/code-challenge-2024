@@ -1,85 +1,71 @@
+import { BitcoinWriter } from "./buffer";
 import { BlockTransaction } from "./interface";
-import { constructMerkleTree } from "./merkleRoot";
+import { calualateMerkleRoot } from "./merkleRoot";
 import { Transaction } from "./transaction";
-import { doubleSHA256 } from "./utils";
+import { bigIntTo32Buffer, doubleSHA256 } from "./utils";
 export const BTC = 100000000; // Number of blocks before a coinbase transaction can be spent
-export const BLOCK_VERSION = 2; // Current Bitcoin block version
+export const BLOCK_VERSION = 4; // Current Bitcoin block version
 export const EMPTY_SCRIPT = new Uint8Array([0x00]);
 export const BLOCK_SUBSIDY = 6.25; // Empty script
 export class Block {
   public readonly timestamp: number; // Timestamp indicating when the block was created
   public version: number;
-  public readonly previousHash: string; // Hash of the previous block in the blockchain
+  public readonly previousHash: bigint; // Hash of the previous block in the blockchain
   public nonce: number; // Nonce used in mining to achieve the proof of work
   public transactions: BlockTransaction[] = []; // List of transactions included in the block
-  public merkleRoot: string = ""; // Merkle root of the transactions in the block
-  public hash: string;
-  protected bits: string;
+  public merkleRoot:string; // Merkle root of the transactions in the block
+  public hash: bigint = BigInt(0);
+  protected bits: bigint;
   protected txCount: number;
+  protected totalfees:number
   constructor(
-    previousHash: string,
+    previousHash: bigint,
     transaction: BlockTransaction[],
-    bits: string
+    bits: bigint=BigInt(0x1f00fff)
   ) {
     this.version = BLOCK_VERSION;
     this.previousHash = previousHash;
-    this.merkleRoot = this.calculateMerkleRoot(transaction);
-    this.timestamp = Math.floor(Date.now() / 1000);
-    this.nonce = 0;
-    this.bits = "1f00ffff";
+    this.timestamp = Math.ceil(Date.now() / 1000);
+    this.nonce = 2880808;
+    this.bits = bits;
     this.txCount = transaction.length;
     this.transactions = transaction;
-    this.hash = this.calculateHash().toString("hex");
+    this.totalfees=this.calculateblockFees(transaction);
+    this.merkleRoot = this.getmerkleRoot(transaction);
   }
-  public setTarget(difficulty: bigint): bigint {
-    return difficulty;
-  }
+  get difficulty(): bigint {
+    return ((this.bits & BigInt(0x00ffffff)) * BigInt(2) ** (BigInt(8) * ((this.bits >> BigInt(24)) - BigInt(3))));
+}
 
   public calculateHash(): Buffer {
-    const headerHex = this.constructHeaderBuffer();
+    const headerHex = this.headerBuffer();
     return doubleSHA256(headerHex);
   }
-  private constructBits(target: string): string {
-    const targetBuffer = Buffer.from(target, "hex");
-    const exponent = targetBuffer.readUInt8(3);
-    const mantissa = targetBuffer.readUInt32BE(4);
-
-    const bitsExponent = exponent.toString(16).padStart(2, "0");
-    const bitsMantissa = mantissa.toString(16).padStart(6, "0");
-    const bits = bitsExponent + bitsMantissa;
-    console.log(bits);
-    return bits;
-  }
-  public constructHeaderBuffer(): Buffer {
-    const buffers: Buffer[] = [];
-    buffers.push(
-      Buffer.from([
-        this.version & 0xff,
-        (this.version >> 8) & 0xff,
-        (this.version >> 16) & 0xff,
-        (this.version >> 24) & 0xff,
-      ])
-    );
-    buffers.push(Buffer.from(this.previousHash, "hex"));
-    buffers.push(Buffer.from(this.merkleRoot, "hex"));
-    const timestampBytes = Buffer.alloc(4);
-    timestampBytes.writeInt32LE(this.timestamp);
-    buffers.push(timestampBytes);
-    buffers.push(Buffer.from("1f00ffff", "hex"));
-    const nonceBytes = Buffer.alloc(4);
-    nonceBytes.writeUInt32LE(this.nonce);
-    buffers.push(nonceBytes);
-    const blockheader = Buffer.concat(buffers);
-    return blockheader;
+  public headerBuffer(): Buffer {
+    const buffer=Buffer.allocUnsafe(80);
+    const writer=new BitcoinWriter(buffer);
+    writer.writeUint32(this.version);
+    const previous = bigIntTo32Buffer(this.previousHash);
+    previous.reverse()
+    writer.writeBuffer(previous);    
+    writer.writeBuffer(Buffer.from(this.merkleRoot, "hex").reverse());
+    writer.writeUint32(this.timestamp);
+    writer.writeUint32(Number(this.bits))
+    writer.writeUint32(this.nonce)
+    console.log(buffer.toString('hex'));
+    return buffer;
   }
   createTransaction(tx: Transaction): Transaction {
     const transaction = new Transaction(tx);
     this.addTransaction(transaction.getTx());
     return transaction;
   }
-  private calculateblockFees() {
+  private calculateblockFees(transaction:BlockTransaction[]) {
     let totalFee = 0;
-    this.transactions.forEach((transaction) => totalFee + transaction.fee);
+    for(const tx of transaction){
+      totalFee+=tx.fee;
+    }
+    console.log("TotalFee",totalFee)
     return totalFee;
   }
   addTransaction(transaction: BlockTransaction): number {
@@ -91,35 +77,44 @@ export class Block {
   private calculateWeight() {}
 
   addCoinbaseTransaction(tx: Transaction) {
-    tx.vout[0].value += this.calculateblockFees();
+    tx.vout[0].value += this.totalfees;
     tx.vout[1].scriptpubkey = `6a24aa21a9ed${this.getwtxidCommitment().toString(
       "hex"
     )}`;
     console.log("Coinbase", tx.getTxId());
     this.transactions.unshift(tx.getTx());
+    this.updateMerkleRoot(this.transactions);
+    this.txCount++;
     return {serializeCoinbase:tx.serializeWithWitness()}
   }
   private getwtxidCommitment() {
     console.log(
-      doubleSHA256(Buffer.from(this.calculatewTxidRoot + "0".repeat(64), "hex"))
+      doubleSHA256(Buffer.from(this.calculatewTxidRoot(this.transactions) + "0".repeat(64), "hex"))
     );
     return doubleSHA256(
-      Buffer.from(this.calculatewTxidRoot + "0".repeat(64), "hex")
+      Buffer.from(this.calculatewTxidRoot(this.transactions) + "0".repeat(64), "hex")
     );
   }
   private calculatewTxidRoot(transactions: BlockTransaction[]) {
     const wtxids = transactions.map((el) => el.wtxid);
     wtxids.unshift("0".repeat(64)); /// for coinbase
-    return constructMerkleTree(wtxids);
+    return calualateMerkleRoot(wtxids);
   }
   private updateMerkleRoot(transaction: BlockTransaction[]): void {
-    this.merkleRoot = this.calculateMerkleRoot(transaction);
+    this.merkleRoot = this.getmerkleRoot(transaction);
   }
-  private calculateMerkleRoot(transactions: BlockTransaction[]): string {
+  private getmerkleRoot(transactions:BlockTransaction[]){
     if (transactions.length === 0) {
       throw new Error("empty transactions for create merkle root");
     }
     const txids = transactions.map((el) => el.txid);
-    return constructMerkleTree(txids).toString("hex");
+    return calualateMerkleRoot(txids);
+  }
+  private getTarget(){
+    const bits = parseInt('0x' + this.bits, 16);
+		const exponent = bits >> 24;
+		const mantissa = bits & 0xFFFFFF;
+		const target = (mantissa * (2 ** (8 * (exponent - 3)))).toString(16);
+    return  Buffer.from('0'.repeat(64 - target.length) + target, 'hex')
   }
 }
