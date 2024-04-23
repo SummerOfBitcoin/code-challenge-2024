@@ -64,7 +64,7 @@ class MineBlock {
                 header.writeUInt32LE(this.block.nonce, 80 - 4);
                 this.block.hash = (0, utils_1.doubleSHA256)(header).toString("hex");
                 this.hashes++;
-                console.log(this.block.nonce, this.block.hash);
+                // console.log(this.block.nonce, this.block.hash);
             }
             console.log("Block mined", this.block.hash, `in ${this.hashes} iterations`);
         });
