@@ -4,7 +4,7 @@
     it would place a warning in the lines 14-17 because we are not actually using the value of 
     theses items.
 */
-#![allow(dead_code)]
+#![allow(dead_code, unused)]
 
 // Rust's dependencies used to implement the structure
 // core::fmt for implementing the custom Display for this struct, customizing the way it is printed in stdout
