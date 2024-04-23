@@ -9,7 +9,7 @@ export const coinbaseTX = () => {
           txid: "0".repeat(64),
           vout: 0xffffffff,
           scriptsig:
-            "0301184d696e656420627920416e74506f6f6c373946205b8160a4256c0000946e0100",
+            "03233708184d696e656420627920416e74506f6f6c373946205b8160a4256c0000946e0100",
           sequence: 0xffffffff,
           is_coinbase: true,
           prevout: {

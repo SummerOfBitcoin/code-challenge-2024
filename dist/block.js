@@ -61,7 +61,6 @@ class Block {
         this.merkleRoot = this.getmerkleRoot(this.transactions);
         return this.txCount;
     }
-    calculateWeight() { }
     addCoinbaseTransaction(tx) {
         tx.vout[0].value += this.totalfees;
         tx.vout[1].scriptpubkey = `6a24aa21a9ed${this.getwtxidCommitment().toString("hex")}`;
@@ -72,7 +71,6 @@ class Block {
         return { serializeCoinbase: tx.serializeWithWitness() };
     }
     getwtxidCommitment() {
-        console.log((0, utils_1.doubleSHA256)(Buffer.from(this.calculatewTxidRoot(this.transactions) + "0".repeat(64), "hex")));
         return (0, utils_1.doubleSHA256)(Buffer.from(this.calculatewTxidRoot(this.transactions) + "0".repeat(64), "hex"));
     }
     calculatewTxidRoot(transactions) {
@@ -96,3 +94,5 @@ class Block {
     }
 }
 exports.Block = Block;
+function calulateWTXIDsRoot(transaction) {
+}

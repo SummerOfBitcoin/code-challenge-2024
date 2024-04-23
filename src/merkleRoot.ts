@@ -16,7 +16,7 @@ export function calualateMerkleRoot(txids: string[]): string {
   }
   const reversedTxids = txids.map(reverseHex);
 
-  let tree: string[] = reversedTxids.slice();
+  let tree: string[] = txids.slice();
 
   while (tree.length > 1) {
     const newTree: string[] = [];

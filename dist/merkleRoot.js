@@ -21,7 +21,7 @@ function calualateMerkleRoot(txids) {
         throw new Error('Transaction IDs array cannot be empty');
     }
     const reversedTxids = txids.map(reverseHex);
-    let tree = reversedTxids.slice();
+    let tree = txids.slice();
     while (tree.length > 1) {
         const newTree = [];
         for (let i = 0; i < tree.length; i += 2) {

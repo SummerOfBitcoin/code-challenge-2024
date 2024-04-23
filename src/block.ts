@@ -72,7 +72,6 @@ export class Block {
     this.merkleRoot=this.getmerkleRoot(this.transactions)
     return this.txCount;
   }
-  private calculateWeight() {}
 
   addCoinbaseTransaction(tx: Transaction) {
     tx.vout[0].value += this.totalfees;
@@ -86,9 +85,6 @@ export class Block {
     return {serializeCoinbase:tx.serializeWithWitness()}
   }
   private getwtxidCommitment() {
-    console.log(
-      doubleSHA256(Buffer.from(this.calculatewTxidRoot(this.transactions) + "0".repeat(64), "hex"))
-    );
     return doubleSHA256(
       Buffer.from(this.calculatewTxidRoot(this.transactions) + "0".repeat(64), "hex")
     );
@@ -113,4 +109,10 @@ export class Block {
 		const target = (mantissa * (2 ** (8 * (exponent - 3)))).toString(16);
     return  Buffer.from('0'.repeat(64 - target.length) + target, 'hex')
   }
+}
+
+
+
+function calulateWTXIDsRoot(transaction:BlockTransaction[]){
+   
 }
