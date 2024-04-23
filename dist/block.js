@@ -10,7 +10,7 @@ exports.BLOCK_VERSION = 4; // Current Bitcoin block version
 exports.EMPTY_SCRIPT = new Uint8Array([0x00]);
 exports.BLOCK_SUBSIDY = 6.25; // Empty script
 class Block {
-    constructor(previousHash, transaction, bits) {
+    constructor(previousHash, transaction, bits = BigInt(0x1f00fff)) {
         this.transactions = []; // List of transactions included in the block
         this.merkleRoot = ""; // Merkle root of the transactions in the block
         this.version = exports.BLOCK_VERSION;
@@ -24,8 +24,8 @@ class Block {
         this.totalfees = this.calculateblockFees(transaction);
         this.hash = '';
     }
-    setTarget(difficulty) {
-        return difficulty;
+    get difficulty() {
+        return ((this.bits & BigInt(0x00ffffff)) * BigInt(2) ** (BigInt(8) * ((this.bits >> BigInt(24)) - BigInt(3))));
     }
     calculateHash() {
         const headerHex = this.headerBuffer();
@@ -48,11 +48,35 @@ class Block {
         writer.writeBuffer(Buffer.from(this.previousHash, "hex").reverse());
         writer.writeBuffer(Buffer.from(this.merkleRoot, "hex").reverse());
         writer.writeUint32(this.timestamp);
-        writer.writeBuffer(Buffer.from(this.bits, 'hex'));
+        writer.writeUint32(Number(this.bits));
         writer.writeUint32(this.nonce);
         console.log(buffer.toString('hex'));
         return buffer;
     }
+    // getbuffer(){
+    //   const buffer = new Buffer(80); // Allocate 80 bytes for the header
+    //   let offset = 0;
+    //   // Version (little-endian)
+    //   buffer.writeUInt32BE(this.version, offset);
+    //   offset += 4;
+    //   // Previous Block Hash
+    //   buffer.fill(this.previousHash, offset, offset + 32, 'hex');
+    //   offset += 32;
+    //   // Merkle Root
+    //   buffer.fill(this.merkleRoot, offset, offset + 32, 'hex');
+    //   offset += 32;
+    //   // Time (little-endian)
+    //   buffer.writeUInt32BE(this.timestamp, offset);
+    //   offset += 4;
+    //   // Bits (little-endian) - May require bit manipulation libraries for accurate conversion
+    //   // For simplicity, assuming it's already a 32-bit integer in little-endian
+    //   buffer.writeUInt32BE(this.bits, offset);
+    //   offset += 4;
+    //   // Nonce (little-endian)
+    //   buffer.writeUInt32BE(block.nonce, offset);
+    //   offset += 4;
+    //   return buffer.toString('hex');
+    // }
     createTransaction(tx) {
         const transaction = new transaction_1.Transaction(tx);
         this.addTransaction(transaction.getTx());

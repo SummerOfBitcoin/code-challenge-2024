@@ -55,15 +55,14 @@ class MineBlock {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            const target = BigInt("0x" + this.difficulty);
             const header = this.block.headerBuffer();
             this.block.hash = (0, utils_1.doubleSHA256)(header).toString('hex');
-            while (BigInt(`0x${this.block.hash}`) > target) {
+            while (BigInt(`0x${this.block.hash}`) > this.block.difficulty) {
                 this.block.nonce += 1;
                 header.writeUInt32LE(this.block.nonce, 80 - 4);
                 this.block.hash = (0, utils_1.doubleSHA256)(header).toString('hex');
                 this.hashes++;
-                console.log(this.block.nonce, this.block.hash);
+                // console.log(this.block.nonce,this.block.hash);
                 if (this.hashes % 1000000 === 0) {
                     console.log(`Iteration ${this.hashes}: ${this.block.hash}`);
                 }
@@ -81,9 +80,10 @@ class MiningSimulation {
     mine(chain) {
         return __awaiter(this, void 0, void 0, function* () {
             const coinbase = (0, coinbase_1.coinbaseTX)();
-            const target = "0000ffff00000000000000000000000000000000000000000000000000000000";
+            const target = '0000ffff00000000000000000000000000000000000000000000000000000000';
             const validtransaction = this.getValidTransactions();
-            const block = new block_1.Block("0".repeat(64), validtransaction, "1f00ffff");
+            const block = new block_1.Block("0".repeat(64), validtransaction, BigInt(0x1f00ffff));
+            console.log(block.headerBuffer().toString('hex'));
             const { serializeCoinbase } = block.addCoinbaseTransaction(coinbase);
             const mineBlock = new MineBlock(chain, block, target);
             console.log(`Start mining of ${block.transactions.length} transactions with of 12.5 BTC`);
@@ -99,7 +99,6 @@ class MiningSimulation {
     }
     getValidTransactions() {
         const transactionsToValidate = [];
-        console.log("start fetching transaction from memory pool");
         this.memoryPool.getTransactions().forEach((tx) => {
             transactionsToValidate.push(tx);
         });
