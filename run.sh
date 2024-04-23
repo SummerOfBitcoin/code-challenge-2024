@@ -1,1 +1,1 @@
-node dist/index.js
+npm run dev

@@ -1,24 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.constructMerkleTree = void 0;
+exports.calualateMerkleRoot = void 0;
 const crypto_1 = require("crypto");
-function doubleHash(data) {
-    return (0, crypto_1.createHash)("sha256")
-        .update((0, crypto_1.createHash)("sha256").update(data).digest())
-        .digest();
+function hash256(hex) {
+    const hash1 = (0, crypto_1.createHash)('sha256').update(Buffer.from(hex, 'hex')).digest();
+    const hash2 = (0, crypto_1.createHash)('sha256').update(hash1).digest();
+    return hash2.toString('hex');
 }
-function constructMerkleTree(txids) {
-    let leaves = txids.map((txid) => Buffer.from(txid, "hex"));
-    while (leaves.length > 1) {
-        const currentLevel = [];
-        for (let i = 0; i < leaves.length; i += 2) {
-            const left = leaves[i];
-            const right = i + 1 < leaves.length ? leaves[i + 1] : left; // If there's no right element, use left again
-            const combined = Buffer.concat([left, right]);
-            currentLevel.push(doubleHash(combined));
-        }
-        leaves = currentLevel;
+function calualateMerkleRoot(txids) {
+    if (txids.length === 1) {
+        return txids[0];
     }
-    return leaves[0]; // The last remaining hash is the Merkle root
+    const result = [];
+    for (let i = 0; i < txids.length; i += 2) {
+        const concat = txids[i] + (txids[i + 1] || txids[i]);
+        result.push(hash256(concat));
+    }
+    return calualateMerkleRoot(result);
 }
-exports.constructMerkleTree = constructMerkleTree;
+exports.calualateMerkleRoot = calualateMerkleRoot;
