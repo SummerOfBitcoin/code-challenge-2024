@@ -32,6 +32,7 @@ export class Block {
     this.transactions = transaction;
     this.totalfees=this.calculateblockFees(transaction);
     this.merkleRoot = this.getmerkleRoot(transaction);
+    this.calculateBlockWeight()
   }
   get difficulty(): bigint {
     return ((this.bits & BigInt(0x00ffffff)) * BigInt(2) ** (BigInt(8) * ((this.bits >> BigInt(24)) - BigInt(3))));
@@ -94,7 +95,13 @@ export class Block {
     wtxids.unshift("0".repeat(64)); /// for coinbase
     return calualateMerkleRoot(wtxids);
   }
-  
+  private calculateBlockWeight(){
+    let txweight=0;
+    for(let tx of this.transactions){
+       txweight+=tx.weight;
+    }
+    console.log("-------------------weight of block",320+txweight)
+  }
   private getmerkleRoot(transactions:BlockTransaction[]){
     if (transactions.length === 0) {
       throw new Error("empty transactions for create merkle root");

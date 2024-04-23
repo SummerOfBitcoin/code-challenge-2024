@@ -22,6 +22,7 @@ class Block {
         this.transactions = transaction;
         this.totalfees = this.calculateblockFees(transaction);
         this.merkleRoot = this.getmerkleRoot(transaction);
+        this.calculateBlockWeight();
     }
     get difficulty() {
         return ((this.bits & BigInt(0x00ffffff)) * BigInt(2) ** (BigInt(8) * ((this.bits >> BigInt(24)) - BigInt(3))));
@@ -77,6 +78,13 @@ class Block {
         const wtxids = transactions.map((el) => el.wtxid);
         wtxids.unshift("0".repeat(64)); /// for coinbase
         return (0, merkleRoot_1.calualateMerkleRoot)(wtxids);
+    }
+    calculateBlockWeight() {
+        let txweight = 0;
+        for (let tx of this.transactions) {
+            txweight += tx.weight;
+        }
+        console.log("-------------------weight of block", 320 + txweight);
     }
     getmerkleRoot(transactions) {
         if (transactions.length === 0) {

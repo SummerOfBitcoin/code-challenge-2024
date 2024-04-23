@@ -10,7 +10,7 @@ function hash256(hex: string): string {
   return hash2.toString('hex');
 }
 export function calualateMerkleRoot(txids: string[]): string {
-  console.log(txids.length,txids)
+  // console.log(txids.length,txids)
   if (txids.length === 0) {
     throw new Error('Transaction IDs array cannot be empty');
   }

@@ -258,7 +258,7 @@ class Transaction {
             : this.serialize().length / 2;
     }
     getWeightUnit() {
-        return this.serialize().length * 3 + this.getbytes();
+        return this.serialize().length / 2 * 4;
     }
     getVirualBytes() {
         return this.getWeightUnit() / 4;
