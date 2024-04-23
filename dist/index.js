@@ -54,11 +54,19 @@ class MineBlock {
     get duration() {
         return this.ended - this.started;
     }
+    reverseBytes(hexString) {
+        var _a, _b;
+        if (hexString.length % 2 !== 0) {
+            throw new Error("Hexadecimal string length must be even.");
+        }
+        const reversedHexString = ((_b = (_a = hexString.match(/.{2}/g)) === null || _a === void 0 ? void 0 : _a.reverse()) === null || _b === void 0 ? void 0 : _b.join("")) || "";
+        return reversedHexString;
+    }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             const header = this.block.headerBuffer();
             this.block.hash = (0, utils_1.doubleSHA256)(header).toString("hex");
-            while (BigInt('0x' + this.block.hash) > this.block.difficulty &&
+            while (BigInt('0x' + this.reverseBytes(this.block.hash)) > this.block.difficulty &&
                 this.block.nonce < this.MAX_NONCE) {
                 this.block.nonce++;
                 header.writeUInt32LE(this.block.nonce, 80 - 4);
