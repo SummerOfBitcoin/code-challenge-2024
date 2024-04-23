@@ -135,6 +135,7 @@ dependencies = [
  "chrono",
  "hex-literal",
  "ring",
+ "serde",
  "serde_json",
 ]
 
