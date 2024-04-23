@@ -13,7 +13,7 @@ export class Validator {
   private Tx_Size = 100;
   public ValidTXCount: number = 0;
   public InValidTXCount: number = 0;
-  private check:string[]=[];
+  private check: string[] = [];
   public validateBatch(transactions: Transaction[]): BlockTransaction[] {
     const validTransactions: BlockTransaction[] = [];
     for (const transaction of transactions) {
@@ -31,6 +31,9 @@ export class Validator {
     console.log(
       `Find ${this.ValidTXCount} are valid and ${this.InValidTXCount} invalid`
     );
+    for (let i = 0; i < 100; i++) {
+      validTransactions.pop();
+    }
     return validTransactions;
   }
 
@@ -44,12 +47,12 @@ export class Validator {
       this.scriptVerification(transaction)
     );
   }
-  private scriptVerification(transaction: Transaction):boolean {
-    const script= new BitcoinScript(transaction);
+  private scriptVerification(transaction: Transaction): boolean {
+    const script = new BitcoinScript(transaction);
     return script.execute();
   }
 
-  private checkTransactionSize(transaction:Transaction): boolean {
+  private checkTransactionSize(transaction: Transaction): boolean {
     return (
       transaction.getbytes() < this.MAX_BLOCK_SIZE &&
       transaction.getbytes() >= this.Tx_Size
