@@ -79,6 +79,7 @@ export class Block {
     tx.vout[1].scriptpubkey = `6a24aa21a9ed${this.getwtxidCommitment().toString(
       "hex"
     )}`;
+    console.log("coinbase",tx.getTx());
     console.log("Coinbase", tx.getTxId());
     this.transactions.unshift(tx.getTx());
     this.merkleRoot=this.getmerkleRoot(this.transactions);
@@ -86,9 +87,12 @@ export class Block {
     return {serializeCoinbase:tx.serializeWithWitness()}
   }
   private getwtxidCommitment() {
-    return doubleSHA256(
-      Buffer.from(this.calculatewTxidRoot(this.transactions) + "0".repeat(64), "hex")
-    );
+    const wxidRoot=Buffer.from(this.calculatewTxidRoot(this.transactions),'hex');
+    const witnessvalue= Buffer.from( "0".repeat(64), "hex")
+     const commitment=doubleSHA256(Buffer.concat([wxidRoot,witnessvalue]))
+     console.log("94",commitment)
+     return commitment
+
   }
   private calculatewTxidRoot(transactions: BlockTransaction[]) {
     const wtxids = transactions.map((el) => el.wtxid);

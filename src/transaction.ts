@@ -321,7 +321,7 @@ export class Transaction {
       : this.serialize().length / 2;
   }
   public getWeightUnit() {
-    return this.serialize().length/2 * 4;
+    return this.serialize().length/2 * 3 + this.serializeWithWitness().length/2*1;
   }
   public getVirualBytes() {
     return this.getWeightUnit() / 4;

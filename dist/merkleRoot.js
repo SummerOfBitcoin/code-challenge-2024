@@ -16,7 +16,7 @@ function hash256(hex) {
     return hash2.toString('hex');
 }
 function calualateMerkleRoot(txids) {
-    // console.log(txids.length,txids)
+    console.log(txids.length, txids);
     if (txids.length === 0) {
         throw new Error('Transaction IDs array cannot be empty');
     }
