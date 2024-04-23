@@ -17,7 +17,8 @@ export class Block {
   public hash:string=''
   protected bits: bigint;
   protected txCount: number;
-  protected totalfees:number
+  protected totalfees:number;
+  protected witnessMerkleRoot:string;
   constructor(
     previousHash:string,
     transaction: BlockTransaction[],
@@ -32,6 +33,7 @@ export class Block {
     this.transactions = transaction;
     this.totalfees=this.calculateblockFees(transaction);
     this.merkleRoot = this.getmerkleRoot(transaction);
+    this.witnessMerkleRoot=''
     this.calculateBlockWeight()
   }
   get difficulty(): bigint {
@@ -89,7 +91,8 @@ export class Block {
   private getwtxidCommitment() {
     const wxidRoot=Buffer.from(this.calculatewTxidRoot(this.transactions),'hex');
     const witnessvalue= Buffer.from( "0".repeat(64), "hex")
-     const commitment=doubleSHA256(Buffer.concat([wxidRoot,witnessvalue]))
+    const witnessNullVector = Buffer.alloc(32);
+     const commitment=doubleSHA256(Buffer.concat([wxidRoot,witnessNullVector]))
      console.log("94",commitment)
      return commitment
 
