@@ -12,11 +12,11 @@ exports.BLOCK_SUBSIDY = 6.25; // Empty script
 class Block {
     constructor(previousHash, transaction, bits = BigInt(0x1f00fff)) {
         this.transactions = []; // List of transactions included in the block
-        this.hash = BigInt(0);
+        this.hash = '';
         this.version = exports.BLOCK_VERSION;
         this.previousHash = previousHash;
         this.timestamp = Math.ceil(Date.now() / 1000);
-        this.nonce = 2880808;
+        this.nonce = 0;
         this.bits = bits;
         this.txCount = transaction.length;
         this.transactions = transaction;
@@ -34,9 +34,7 @@ class Block {
         const buffer = Buffer.allocUnsafe(80);
         const writer = new buffer_1.BitcoinWriter(buffer);
         writer.writeUint32(this.version);
-        const previous = (0, utils_1.bigIntTo32Buffer)(this.previousHash);
-        previous.reverse();
-        writer.writeBuffer(previous);
+        writer.writeBuffer(Buffer.from(this.previousHash, 'hex').reverse());
         writer.writeBuffer(Buffer.from(this.merkleRoot, "hex").reverse());
         writer.writeUint32(this.timestamp);
         writer.writeUint32(Number(this.bits));

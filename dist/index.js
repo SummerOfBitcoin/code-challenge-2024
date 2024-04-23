@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MiningSimulation = exports.MineBlock = exports.BLOCK_SUBSIDY = void 0;
+exports.Miner = exports.MineBlock = exports.BLOCK_SUBSIDY = void 0;
 const fs = __importStar(require("fs"));
 const blockchain_1 = require("./blockchain");
 const block_1 = require("./block");
@@ -49,6 +49,7 @@ class MineBlock {
         this.started = Date.now();
         this.ended = Date.now();
         this.hashes = 0;
+        this.MAX_NONCE = 4294967295;
     }
     get duration() {
         return this.ended - this.started;
@@ -56,36 +57,33 @@ class MineBlock {
     start() {
         return __awaiter(this, void 0, void 0, function* () {
             const header = this.block.headerBuffer();
-            this.block.hash = (0, utils_1.bufferToBigInt)((0, utils_1.doubleSHA256)(header));
-            while (this.block.hash > this.block.difficulty) {
-                this.block.nonce += 1;
+            this.block.hash = (0, utils_1.doubleSHA256)(header).toString("hex");
+            while (BigInt('0x' + this.block.hash) > this.block.difficulty &&
+                this.block.nonce < this.MAX_NONCE) {
+                this.block.nonce++;
                 header.writeUInt32LE(this.block.nonce, 80 - 4);
-                this.block.hash = (0, utils_1.bufferToBigInt)((0, utils_1.doubleSHA256)(header));
+                this.block.hash = (0, utils_1.doubleSHA256)(header).toString("hex");
                 this.hashes++;
-                // console.log(this.block.nonce,this.block.hash);
-                if (this.hashes % 1000000 === 0) {
-                    console.log(`Iteration ${this.hashes}: ${this.block.hash.toString()}`);
-                }
+                console.log(this.block.nonce, this.block.hash);
             }
             console.log("Block mined", this.block.hash, `in ${this.hashes} iterations`);
         });
     }
 }
 exports.MineBlock = MineBlock;
-class MiningSimulation {
+class Miner {
     constructor(memoryPool) {
         this.memoryPool = memoryPool;
         this.validTransactions = [];
     }
-    mine(chain) {
+    start(chain) {
         return __awaiter(this, void 0, void 0, function* () {
             const coinbase = (0, coinbase_1.coinbaseTX)();
-            const target = '0000ffff00000000000000000000000000000000000000000000000000000000';
             const validtransaction = this.getValidTransactions();
-            const block = new block_1.Block(BigInt(`0x${"0".repeat(64)}`), validtransaction, BigInt(0x1f00ffff));
-            console.log(block.headerBuffer().toString('hex'));
+            const block = new block_1.Block("0".repeat(64), validtransaction, BigInt(0x1f00ffff));
+            console.log(block.headerBuffer().toString("hex"));
             const { serializeCoinbase } = block.addCoinbaseTransaction(coinbase);
-            const mineBlock = new MineBlock(chain, block, target);
+            const mineBlock = new MineBlock(chain, block, "");
             console.log(`Start mining of ${block.transactions.length} transactions with of 12.5 BTC`);
             yield mineBlock.start();
             chain.addBlock(block);
@@ -94,6 +92,7 @@ class MiningSimulation {
                 .headerBuffer()
                 .toString("hex")}\n${serializeCoinbase}\n${txids.join("\n")}`;
             fs.writeFileSync("output.txt", output);
+            // fs.writeFileSync('test.ts',`export const txids = ${JSON.stringify(txids)};`)
             console.log(chain);
         });
     }
@@ -108,9 +107,9 @@ class MiningSimulation {
         return this.validTransactions;
     }
 }
-exports.MiningSimulation = MiningSimulation;
+exports.Miner = Miner;
 const blockchain = new blockchain_1.Blockchain();
 const memoryPool = new memorypool_1.MemoryPool("./mempool");
-const mining = new MiningSimulation(memoryPool);
-mining.mine(blockchain);
+const miner = new Miner(memoryPool);
+miner.start(blockchain);
 console.log(blockchain);
