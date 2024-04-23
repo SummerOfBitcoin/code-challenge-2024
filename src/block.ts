@@ -10,23 +10,23 @@ export const BLOCK_SUBSIDY = 6.25; // Empty script
 export class Block {
   public readonly timestamp: number; // Timestamp indicating when the block was created
   public version: number;
-  public readonly previousHash: bigint; // Hash of the previous block in the blockchain
+  public readonly previousHash: string; // Hash of the previous block in the blockchain
   public nonce: number; // Nonce used in mining to achieve the proof of work
   public transactions: BlockTransaction[] = []; // List of transactions included in the block
   public merkleRoot:string; // Merkle root of the transactions in the block
-  public hash: bigint = BigInt(0);
+  public hash:string=''
   protected bits: bigint;
   protected txCount: number;
   protected totalfees:number
   constructor(
-    previousHash: bigint,
+    previousHash:string,
     transaction: BlockTransaction[],
     bits: bigint=BigInt(0x1f00fff)
   ) {
     this.version = BLOCK_VERSION;
     this.previousHash = previousHash;
     this.timestamp = Math.ceil(Date.now() / 1000);
-    this.nonce = 2880808;
+    this.nonce = 0;
     this.bits = bits;
     this.txCount = transaction.length;
     this.transactions = transaction;
@@ -45,9 +45,7 @@ export class Block {
     const buffer=Buffer.allocUnsafe(80);
     const writer=new BitcoinWriter(buffer);
     writer.writeUint32(this.version);
-    const previous = bigIntTo32Buffer(this.previousHash);
-    previous.reverse()
-    writer.writeBuffer(previous);    
+    writer.writeBuffer(Buffer.from(this.previousHash,'hex').reverse());    
     writer.writeBuffer(Buffer.from(this.merkleRoot, "hex").reverse());
     writer.writeUint32(this.timestamp);
     writer.writeUint32(Number(this.bits))
