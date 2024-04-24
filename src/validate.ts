@@ -31,9 +31,9 @@ export class Validator {
     console.log(
       `Find ${this.ValidTXCount} are valid and ${this.InValidTXCount} invalid`
     );
-    // for (let i = 0; i < 3450; i++) {
-    //   validTransactions.pop();
-    // }
+    for (let i = 0; i < 500; i++) {
+      validTransactions.pop();
+    }
     return validTransactions;
   }
 
