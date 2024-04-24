@@ -160,8 +160,7 @@ class Transaction {
         ]);
     }
     getTx() {
-        const isSegwit = this.hasSegWit(this.vin);
-        return Object.assign({ txid: this.getTxId(), wtxid: isSegwit ? this.getWtxid() : this.getTxId(), weight: this.getWeightUnit(), vbytes: this.getVirualBytes(), bytes: this.getbytes(), fee: this.isCoinbase() ? 0 : this.calculatefee() }, this.clone());
+        return Object.assign({ txid: this.getTxId(), wtxid: this.getWtxid(), weight: this.getWeightUnit(), vbytes: this.getVirualBytes(), bytes: this.getbytes(), fee: this.isCoinbase() ? 0 : this.calculatefee() }, this.clone());
     }
     clone() {
         const verison = this.bufferVerison().toString("hex");

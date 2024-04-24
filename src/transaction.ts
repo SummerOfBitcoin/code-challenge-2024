@@ -202,10 +202,9 @@ export class Transaction {
     ]);
   }
   public getTx(): BlockTransaction {
-    const isSegwit = this.hasSegWit(this.vin);
     return {
       txid: this.getTxId(),
-      wtxid: isSegwit ? this.getWtxid() : this.getTxId(),
+      wtxid: this.getWtxid(),
       weight: this.getWeightUnit(),
       vbytes: this.getVirualBytes(),
       bytes: this.getbytes(),

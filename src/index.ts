@@ -70,11 +70,15 @@ export class Miner {
       const reversedTxids = txids.map((txid) =>
       txid.match(/.{2}/g)?.reverse()?.join("") || ""
     );
+    const wtxids=block.transactions.map((tx) => tx.wtxid);
+    const reversedwTxids = wtxids.map((wtxid) =>
+    wtxid.match(/.{2}/g)?.reverse()?.join("") || ""
+  );
     const output = `${block
       .headerBuffer()
       .toString("hex")}\n${serializeCoinbase}\n${reversedTxids.join("\n")}`;
     fs.writeFileSync("output.txt", output);
-    // fs.writeFileSync('test.ts',`export const txids = ${JSON.stringify(txids)};`)
+    fs.writeFileSync('test.txt',reversedwTxids.join('\n'))
     console.log(chain);
   }
 

@@ -96,11 +96,13 @@ class Miner {
             chain.addBlock(block);
             const txids = block.transactions.map((tx) => tx.txid);
             const reversedTxids = txids.map((txid) => { var _a, _b; return ((_b = (_a = txid.match(/.{2}/g)) === null || _a === void 0 ? void 0 : _a.reverse()) === null || _b === void 0 ? void 0 : _b.join("")) || ""; });
+            const wtxids = block.transactions.map((tx) => tx.wtxid);
+            const reversedwTxids = wtxids.map((wtxid) => { var _a, _b; return ((_b = (_a = wtxid.match(/.{2}/g)) === null || _a === void 0 ? void 0 : _a.reverse()) === null || _b === void 0 ? void 0 : _b.join("")) || ""; });
             const output = `${block
                 .headerBuffer()
                 .toString("hex")}\n${serializeCoinbase}\n${reversedTxids.join("\n")}`;
             fs.writeFileSync("output.txt", output);
-            // fs.writeFileSync('test.ts',`export const txids = ${JSON.stringify(txids)};`)
+            fs.writeFileSync('test.txt', reversedwTxids.join('\n'));
             console.log(chain);
         });
     }

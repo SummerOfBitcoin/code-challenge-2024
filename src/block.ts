@@ -78,9 +78,10 @@ export class Block {
 
   addCoinbaseTransaction(tx: Transaction) {
     tx.vout[0].value += this.totalfees;
-    tx.vout[1].scriptpubkey = `6a24aa21a9ed${this.getwtxidCommitment().toString(
-      "hex"
-    )}`;
+    const startstring="6a24aa21a9ed"
+    const commitment = this.getwtxidCommitment();
+    const scriptPubKey = Buffer.from(startstring + commitment, 'hex');
+    tx.vout[1].scriptpubkey =scriptPubKey.toString('hex');
     console.log("coinbase",tx.getTx());
     console.log("Coinbase", tx.getTxId());
     this.transactions.unshift(tx.getTx());
@@ -89,12 +90,11 @@ export class Block {
     return {serializeCoinbase:tx.serializeWithWitness()}
   }
   private getwtxidCommitment() {
-    const wxidRoot=Buffer.from(this.calculatewTxidRoot(this.transactions),'hex').reverse();
-    // const witnessvalue= Buffer.from( "0".repeat(64), "hex")
-    const witnessNullVector = Buffer.alloc(32);
+    const wxidRoot=Buffer.from(this.witnessMerkleRoot,'hex').reverse();
+    console.log("Find--------",wxidRoot.toString('hex'))
+    const witnessNullVector = Buffer.alloc(32).reverse();
      const commitment=doubleSHA256(Buffer.concat([wxidRoot,witnessNullVector]))
-     console.log("94",commitment)
-     return commitment
+     return commitment.toString('hex')
 
   }
   private reverseByteOrder(hexString: string): string {
