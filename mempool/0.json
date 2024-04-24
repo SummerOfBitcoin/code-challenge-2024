@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "123",
+      "vout": 16,
+      "prevout": {
+        "scriptpubkey": "123",
+        "scriptpubkey_asm": "123",
+        "scriptpubkey_type": "123",
+        "scriptpubkey_address": "123",
+        "value": 37079526
+      },
+      "scriptsig": "",
+      "scriptsig_asm": "",
+      "witness": [
+        "123",
+        "123"
+      ],
+      "is_coinbase": false,
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "scriptpubkey": "123",
+      "scriptpubkey_asm": "123",
+      "scriptpubkey_type": "123",
+      "scriptpubkey_address": "123",
+      "value": 100000
+    },
+    {
+      "scriptpubkey": "123",
+      "scriptpubkey_asm": "123",
+      "scriptpubkey_type": "123",
+      "scriptpubkey_address": "123",
+      "value": 36977942
+    }
+  ]
+}
