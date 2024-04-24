@@ -18,14 +18,14 @@ export class BitcoinScript {
           const p2pkh = new P2PKH(this.transaction);
           isValidInput = p2pkh.execute(scriptPubKey, scriptSig, i);
           break;
-          case "v0_p2wpkh":
-          scriptPubKey = input.prevout.scriptpubkey_asm;
-          publicKeyHash = scriptPubKey.split(" ")[2];
-          scriptPubKey = `OP_DUP OP_HASH160 ${publicKeyHash} OP_EQUALVERIFY OP_CHECKSIG`;
-          witness = input.witness;
-          const p2wpkh = new P2WPKH(this.transaction);
-          isValidInput = p2wpkh.execute(scriptPubKey, witness, i);
-          break;
+          // case "v0_p2wpkh":
+          // scriptPubKey = input.prevout.scriptpubkey_asm;
+          // publicKeyHash = scriptPubKey.split(" ")[2];
+          // scriptPubKey = `OP_DUP OP_HASH160 ${publicKeyHash} OP_EQUALVERIFY OP_CHECKSIG`;
+          // witness = input.witness;
+          // const p2wpkh = new P2WPKH(this.transaction);
+          // isValidInput = p2wpkh.execute(scriptPubKey, witness, i);
+          // break;
         default:
           break;
       }
