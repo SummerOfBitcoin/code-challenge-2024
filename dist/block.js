@@ -117,5 +117,3 @@ class Block {
     }
 }
 exports.Block = Block;
-function calulateWTXIDsRoot(transaction) {
-}

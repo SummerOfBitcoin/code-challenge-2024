@@ -102,7 +102,7 @@ export class Block {
     const reversedBytes = Buffer.from(hexBytes.reverse());
     const reversedHexString = reversedBytes.toString('hex');
     return reversedHexString;
-}
+   }
 
  private calculatewTxidRoot(transactions: BlockTransaction[]) {
     const wtxids = transactions.map((el) => el.wtxid);
@@ -130,10 +130,4 @@ export class Block {
 		const target = (mantissa * (2 ** (8 * (exponent - 3)))).toString(16);
     return  Buffer.from('0'.repeat(64 - target.length) + target, 'hex')
   }
-}
-
-
-
-function calulateWTXIDsRoot(transaction:BlockTransaction[]){
-   
 }
