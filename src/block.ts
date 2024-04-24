@@ -33,7 +33,7 @@ export class Block {
     this.transactions = transaction;
     this.totalfees=this.calculateblockFees(transaction);
     this.merkleRoot = this.getmerkleRoot(transaction);
-    this.witnessMerkleRoot=''
+    this.witnessMerkleRoot=this.calculatewTxidRoot(transaction)
     this.calculateBlockWeight()
   }
   get difficulty(): bigint {
@@ -97,10 +97,18 @@ export class Block {
      return commitment
 
   }
-  private calculatewTxidRoot(transactions: BlockTransaction[]) {
+  private reverseByteOrder(hexString: string): string {
+    const hexBytes = Buffer.from(hexString, 'hex');
+    const reversedBytes = Buffer.from(hexBytes.reverse());
+    const reversedHexString = reversedBytes.toString('hex');
+    return reversedHexString;
+}
+
+ private calculatewTxidRoot(transactions: BlockTransaction[]) {
     const wtxids = transactions.map((el) => el.wtxid);
     wtxids.unshift("0".repeat(64)); /// for coinbase
-    return calualateMerkleRoot(wtxids);
+    const reversedWtxids = wtxids.map(this.reverseByteOrder);
+    return calualateMerkleRoot(reversedWtxids);
   }
   private calculateBlockWeight(){
     let txweight=0;
