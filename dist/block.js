@@ -74,8 +74,8 @@ class Block {
         return { serializeCoinbase: tx.serializeWithWitness() };
     }
     getwtxidCommitment() {
-        const wxidRoot = Buffer.from(this.calculatewTxidRoot(this.transactions), 'hex');
-        const witnessvalue = Buffer.from("0".repeat(64), "hex");
+        const wxidRoot = Buffer.from(this.calculatewTxidRoot(this.transactions), 'hex').reverse();
+        // const witnessvalue= Buffer.from( "0".repeat(64), "hex")
         const witnessNullVector = Buffer.alloc(32);
         const commitment = (0, utils_1.doubleSHA256)(Buffer.concat([wxidRoot, witnessNullVector]));
         console.log("94", commitment);
@@ -90,8 +90,7 @@ class Block {
     calculatewTxidRoot(transactions) {
         const wtxids = transactions.map((el) => el.wtxid);
         wtxids.unshift("0".repeat(64)); /// for coinbase
-        const reversedWtxids = wtxids.map(this.reverseByteOrder);
-        return (0, merkleRoot_1.calualateMerkleRoot)(reversedWtxids);
+        return (0, merkleRoot_1.calualateMerkleRoot)(wtxids);
     }
     calculateBlockWeight() {
         let txweight = 0;
