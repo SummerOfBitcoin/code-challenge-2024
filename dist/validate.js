@@ -33,7 +33,7 @@ class Validator {
             }
         }
         console.log(`Find ${this.ValidTXCount} are valid and ${this.InValidTXCount} invalid`);
-        for (let i = 0; i < 280; i++) {
+        for (let i = 0; i < 275; i++) {
             validTransactions.pop();
         }
         return validTransactions;
