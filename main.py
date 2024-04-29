@@ -15,7 +15,7 @@ from block import merkleroot, coinbase_txid_fn, block_header
 TODO :
 Validate the transactions if it is valid or not.
 '''
-start_time = time.time()
+
 folder_path = 'mempool'
 
 
@@ -125,13 +125,3 @@ with open("output.txt", "w") as file:
     for txid in valid_txids_RBO:
         file.write(txid + "\n")
 
-
-
-
-
-print("="*30)
-
-end_time = time.time()
-elapsed_time = end_time - start_time
-
-print("Elapsed time:", elapsed_time, "seconds")
