@@ -1,0 +1,23 @@
+{
+    "version": 1,
+    "locktime": 0,
+    "vin": [
+      {
+        "txid": "0000000000000000000000000000000000000000000000000000000000000000",
+        "vout": 4294967295,
+        "scriptsig": "",
+        "scriptsig_asm": "",
+        "is_coinbase": true,
+        "sequence": 4294967295
+      }
+    ],
+    "vout": [
+      {
+        "scriptpubkey": "00140d1c76c89fbba64867349c1ad0f3313e6b4b7d36",
+        "scriptpubkey_asm": "OP_0 OP_PUSHBYTES_20 0d1c76c89fbba64867349c1ad0f3313e6b4b7d36",
+        "scriptpubkey_type": "v0_p2wpkh",
+        "scriptpubkey_address": "bc1qp5w8djylhwnysee5nsddpue38e45klfk893yee",
+        "value": 1254502030
+      }
+    ]
+  }
