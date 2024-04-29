@@ -1,7 +1,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
-
+const let a= "test"
 // Load transactions from mempool
 const mempoolDir = './mempool';
 const transactions = [];
