@@ -22,7 +22,7 @@
       "sequence": 4294967295
     }
   ],
-  "vout": [
+  "vout": [ 
     {
       "scriptpubkey": "0014a32080f407842f1729a3baf52737617916b90e78",
       "scriptpubkey_asm": "OP_0 OP_PUSHBYTES_20 a32080f407842f1729a3baf52737617916b90e78",
