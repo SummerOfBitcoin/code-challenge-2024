@@ -75,68 +75,68 @@ for i in range(len(total_file_names)):
 
     # print(f"Epoch {i} and {file_name}")
 
-Wtxid_commitment = wtxid_commitment(valid_wtxids_NBO)
-print(Wtxid_commitment)
+# Wtxid_commitment = wtxid_commitment(valid_wtxids_NBO)
+# print(Wtxid_commitment)
 
 # Converting array into string 
-# valid_files_name = ','.join(map(str, valid_files_name))
-# file_path = "Valid_p2tr_files.txt"
-# with open(file_path, 'w') as file:
-#     file.write(valid_files_name)
+valid_files_name = ','.join(map(str, valid_files_name))
+file_path = "Valid_p2tr_files.txt"
+with open(file_path, 'w') as file:
+    file.write(valid_files_name)
 
-# valid_txids = ','.join(map(str, valid_txids_RBO))
-# file_path = "Valid_txids.txt"
-# with open(file_path, 'w') as file:
-#     file.write(valid_txids)
-
-
-# # Coinbase txid 
-# file_path = 'coinbase_transaction.json'
-# with open(file_path, 'r') as file:
-#     coinbase_json_data = json.load(file)
-
-# coinbase_txid = coinbase_txid_fn(coinbase_json_data)
-# coinbase_txid_NBO = rev(coinbase_txid)
-# valid_txids_NBO.insert(0, coinbase_txid_NBO)
+valid_txids = ','.join(map(str, valid_txids_RBO))
+file_path = "Valid_txids.txt"
+with open(file_path, 'w') as file:
+    file.write(valid_txids)
 
 
-# merkle_root = merkleroot(valid_txids_NBO)
-# version = "20000000"
-# target = '0000ffff00000000000000000000000000000000000000000000000000000000'
-# previous_block_hash = "00000000000000000000edfa4600a4f4d631607aee815632ed1b27c2b5c362b8"
-# nonce = 0
+# Coinbase txid 
+file_path = 'coinbase_transaction.json'
+with open(file_path, 'r') as file:
+    coinbase_json_data = json.load(file)
 
-# # Proof of work
-
-# while True:
-
-#     # block Header serilization 
-#     Block_Header = block_header(version, previous_block_hash, merkle_root, nonce)
-#     result = dsha(Block_Header)
-#     result = rev(result)
+coinbase_txid = coinbase_txid_fn(coinbase_json_data)
+coinbase_txid_NBO = rev(coinbase_txid)
+valid_txids_NBO.insert(0, coinbase_txid_NBO)
 
 
-#     # end if we get a block hash below the target
-#     if int(result, 16) < int(target, 16):
-#         break
-#     nonce += 1
+merkle_root = merkleroot(valid_txids_NBO)
+version = "20000000"
+target = '0000ffff00000000000000000000000000000000000000000000000000000000'
+previous_block_hash = "00000000000000000000edfa4600a4f4d631607aee815632ed1b27c2b5c362b8"
+nonce = 0
 
-# print("Final_nonce:", nonce)
-# Final_nonce = nonce
+# Proof of work
+
+while True:
+
+    # block Header serilization 
+    Block_Header = block_header(version, previous_block_hash, merkle_root, nonce)
+    result = dsha(Block_Header)
+    result = rev(result)
+
+
+    # end if we get a block hash below the target
+    if int(result, 16) < int(target, 16):
+        break
+    nonce += 1
+
+print("Final_nonce:", nonce)
+Final_nonce = nonce
 
 
 
-# # Output.txt
-# Block_header = block_header(version, previous_block_hash, merkle_root, Final_nonce)
-# Coinbase_serilize_transaction_data = wtxid_Serelization(coinbase_json_data)
+# Output.txt
+Block_header = block_header(version, previous_block_hash, merkle_root, Final_nonce)
+Coinbase_serilize_transaction_data = wtxid_Serelization(coinbase_json_data)
 
-# with open("output.txt", "w") as file:
-#     file.write(Block_header + "\n")
+with open("output.txt", "w") as file:
+    file.write(Block_header + "\n")
     
-#     file.write(Coinbase_serilize_transaction_data + "\n")
+    file.write(Coinbase_serilize_transaction_data + "\n")
     
-#     file.write(coinbase_txid + "\n")
-#     # Write the transaction IDs (txids)
-#     for txid in valid_txids_RBO:
-#         file.write(txid + "\n")
+    file.write(coinbase_txid + "\n")
+    # Write the transaction IDs (txids)
+    for txid in valid_txids_RBO:
+        file.write(txid + "\n")
 
