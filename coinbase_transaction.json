@@ -5,8 +5,11 @@
       {
         "txid": "0000000000000000000000000000000000000000000000000000000000000000",
         "vout": 4294967295,
-        "scriptsig": "",
+        "scriptsig": "03233708184d696e656420627920416e74506f6f6c373946205b8160a4256c0000946e0100",
         "scriptsig_asm": "",
+        "witness": [
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
         "is_coinbase": true,
         "sequence": 4294967295
       }
@@ -14,10 +17,15 @@
     "vout": [
       {
         "scriptpubkey": "00140d1c76c89fbba64867349c1ad0f3313e6b4b7d36",
-        "scriptpubkey_asm": "OP_0 OP_PUSHBYTES_20 0d1c76c89fbba64867349c1ad0f3313e6b4b7d36",
         "scriptpubkey_type": "v0_p2wpkh",
         "scriptpubkey_address": "bc1qp5w8djylhwnysee5nsddpue38e45klfk893yee",
         "value": 1254502030
+      },
+      {
+        "scriptpubkey": "aa21a9ed408379af32e43eff8a9bf0d66f59218af169d0b9fc84384637f262c88a43ecb1",
+        "scriptpubkey_type": "v0_p2wpkh",
+        "scriptpubkey_address": "bc1qp5w8djylhwnysee5nsddpue38e45klfk893yee",
+        "value": 0
       }
     ]
   }

@@ -7,9 +7,9 @@ from hashlib import sha256
 from ecdsa import VerifyingKey, SECP256k1
 from base64 import b64decode
 
-from serelization import Serelization, dsha, rev, sha, little_endian, transaction_id, remove_json, testing, checking_ptr, total_fees_df
+from serelization import Serelization, dsha, rev, sha, little_endian, transaction_id, remove_json, testing, checking_ptr, total_fees_df, wtxid_Serelization
 from conversion import encode
-from block import merkleroot, coinbase_txid_fn, block_header
+from block import merkleroot, coinbase_txid_fn, block_header, wtxid_commitment
 
 '''
 TODO :
@@ -29,6 +29,8 @@ valid_files_name = []  # this will contain all valid and serilized files
 # valid txids
 valid_txids_RBO = []
 valid_txids_NBO = []
+valid_wtxids_RBO = []
+valid_wtxids_NBO = []
 Total_Number_of_correct_serilization = 0
 Total_Number_of_Incorrect_serlization = 0
 total_fees = 0
@@ -53,8 +55,18 @@ for i in range(len(total_file_names)):
     if testing(txid, file_name_without_json) == True and checking_ptr(transaction_json_data) == True:
         Total_Number_of_correct_serilization += 1
         valid_files_name.append(file_name_without_json)
+        
         valid_txids_RBO.append(txid)
         valid_txids_NBO.append(rev(txid))
+
+        # Raw transaction data  for wtxid
+        Raw_transaction_data_wtxid = wtxid_Serelization(transaction_json_data)
+        # Wtxid in reverse byte order
+        wtxid = transaction_id(Raw_transaction_data_wtxid)
+
+        valid_wtxids_RBO.append(wtxid)
+        valid_wtxids_NBO.append(rev(wtxid))
+
         fees = total_fees_df(transaction_json_data)
         total_fees += fees
 
@@ -62,6 +74,9 @@ for i in range(len(total_file_names)):
         Total_Number_of_Incorrect_serlization += 1
 
     # print(f"Epoch {i} and {file_name}")
+
+# Wtxid_commitment = wtxid_commitment(valid_wtxids_NBO)
+# print(Wtxid_commitment)
 
 # Converting array into string 
 valid_files_name = ','.join(map(str, valid_files_name))
