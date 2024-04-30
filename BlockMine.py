@@ -5,7 +5,7 @@ import time
 from typing import List, Dict
 
 # Set the difficulty target
-DIFFICULTY_TARGET = 0x00000000000000000000000000000000000000000000000000000000000000ff
+DIFFICULTY_TARGET = 0000ffff00000000000000000000000000000000000000000000000000000000
 
 # Define the function to validate transactions
 def is_valid_transaction(tx: Dict) -> bool:
@@ -23,14 +23,13 @@ def is_valid_transaction(tx: Dict) -> bool:
     if any(vout['value'] < 0 for vout in tx['vout']):
         return False
 
-    # Add additional validation rules as needed
-    # ...
+   #Need to insert all the functions I created in SECTIONS folder
 
     return True
 
-# Define the function to validate input transactions
+
 def is_valid_input(vin: Dict, vout: List[Dict]) -> bool:
-    # Check if the input transaction is referenced in the output transactions
+    
     txid = vin['txid']
     vout_index = vin['vout']
     for tx_vout in vout:
@@ -70,20 +69,16 @@ def mine_block(transactions: List[Dict]) -> (Dict, bytes, List[str]):
     coinbase_tx_serialized = serialize_transaction(coinbase_tx)
     return block_header, coinbase_tx_serialized, [coinbase_tx['txid']] + [tx['txid'] for tx in transactions]
 
-# Function to calculate the Merkle root
 def calculate_merkle_root(transactions: List[Dict]) -> str:
-    # Implement Merkle root calculation logic
-    # This is a simplified implementation for demonstration purposes
+    
     tx_hashes = [bytes.fromhex(tx['txid']) for tx in transactions]
     if not tx_hashes:
         return '0' * 64
     else:
         return hashlib.sha256(b''.join(tx_hashes)).hexdigest()
 
-# Function to serialize the block header
 def serialize_header(header: Dict) -> bytes:
-    # Implement block header serialization logic
-    # This is a simplified implementation for demonstration purposes
+    
     version = header['version'].to_bytes(4, byteorder='little')
     prev_block_hash = bytes.fromhex(header['prev_block_hash'])
     merkle_root = bytes.fromhex(header['merkle_root'])
@@ -94,14 +89,12 @@ def serialize_header(header: Dict) -> bytes:
 
 # Function to create the coinbase transaction
 def create_coinbase_transaction() -> Dict:
-    # Implement coinbase transaction creation logic
-    # This is a simplified implementation for demonstration purposes
+    
     return {'txid': '0000000000000000000000000000000000000000000000000000000000000000'}
 
 # Function to serialize a transaction
 def serialize_transaction(tx: Dict) -> bytes:
-    # Implement transaction serialization logic
-    # This is a simplified implementation for demonstration purposes
+  
     return bytes.fromhex(tx['hex'])
 
 # Load transactions from the mempool folder
