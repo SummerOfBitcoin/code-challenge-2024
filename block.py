@@ -113,7 +113,7 @@ def block_header(version, previous_block_hash, merkle_root, nonce):
 def wtxid_commitment(wtxid_list):
     # merkle root for all of the wTXIDs
     # Txid in in natural byte order in merkle root
-    witness_root_hash = merkleroot(wtxid_list)
+    witness_root_hash = rev(merkleroot(wtxid_list))
 
     witness_reserved_value = '0000000000000000000000000000000000000000000000000000000000000000'
     wTXID_commitment = dsha(witness_root_hash+ witness_reserved_value)
