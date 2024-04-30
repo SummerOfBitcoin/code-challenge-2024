@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import ecdsa
+import time
 from hashlib import sha256
 from ecdsa import VerifyingKey, SECP256k1
 from base64 import b64decode
@@ -62,7 +63,7 @@ def block(merkle_root, bits, nonce, transaction_count, coinbase_txid, transactio
     merkle_root = merkle_root
 
     # Time - 4 bytes and Little-endian
-    time  = '6d3f2f66'
+    # little_endian_time  = '6d3f2f66'
 
     # Bits - sizeis 4 bytes and it is compact representation of the difficulty target.
     bits = '1f00ffff'
@@ -92,8 +93,9 @@ def block_header(version, previous_block_hash, merkle_root, nonce):
     block_head_raw += merkle_root
 
     # Time - 4 bytes and Little-endian
-    time  = '6d3f2f66'
-    block_head_raw += time
+    current_unix_time = int(time.time())
+    time_little_endian  = little_endian(current_unix_time, 4)
+    block_head_raw += time_little_endian
 
     # Bits - sizeis 4 bytes and it is compact representation of the difficulty target.
     bits = '1f00ffff'
