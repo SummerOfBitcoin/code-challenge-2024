@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 code.py
+python3 solution.py
