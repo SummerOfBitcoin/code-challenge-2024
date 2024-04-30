@@ -128,7 +128,7 @@ Final_nonce = nonce
 
 # Output.txt
 Block_header = block_header(version, previous_block_hash, merkle_root, Final_nonce)
-Coinbase_serilize_transaction_data = Serelization(coinbase_json_data)
+Coinbase_serilize_transaction_data = wtxid_Serelization(coinbase_json_data)
 
 with open("output.txt", "w") as file:
     file.write(Block_header + "\n")
