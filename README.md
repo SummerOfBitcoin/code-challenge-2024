@@ -1,4 +1,4 @@
-My solution for the code-challenge-20224 for summer of bitcoin 2024 program.
+My solution for the code-challenge-2024 for summer of bitcoin 2024 program.
 The output is 
 
 ```
