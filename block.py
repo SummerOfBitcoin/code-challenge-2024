@@ -88,7 +88,7 @@ def block_header(version, previous_block_hash, merkle_root, nonce):
     previous_block_hash = rev(previous_block_hash)
     block_head_raw += previous_block_hash
 
-    merkle_root = rev(merkle_root)
+    merkle_root = merkle_root
     block_head_raw += merkle_root
 
     # Time - 4 bytes and Little-endian
